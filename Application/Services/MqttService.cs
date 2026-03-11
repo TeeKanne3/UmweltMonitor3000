@@ -1,31 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MQTTnet;
 using UmweltMonitor3000.Application.Interfaces;
+using UmweltMonitor3000.Application.Models;
 
 namespace UmweltMonitor3000.Application.Services;
 
 public class MqttService : IMqttService
 {
-    public Task ConnectAsync(string brokerAddress, int brokerPort, string clientId, string username, string password)
+    private readonly IMqttClient _client;
+    private readonly string _broker;
+    private readonly int _port;
+
+    public event Action<SensorData> OnMessageReceived;
+
+    public MqttService(string broker = "localhost", int port = 1883)
     {
-        throw new NotImplementedException();
+        _broker = broker;
+        _port = port;
+        MqttClientFactory factory = new();
+        _client = factory.CreateMqttClient();
     }
 
-    public Task DisconnectAsync()
+    public async Task ConnectAsync(string clientId, string username, string password)
     {
-        throw new NotImplementedException();
+        var options = new MqttClientOptionsBuilder()
+            .WithTcpServer(_broker, _port)
+            .WithCleanSession()
+            .Build();
+        _client.ApplicationMessageReceivedAsync += HandleMessage;
+        await _client.ConnectAsync(options);
     }
 
-    public Task PublishAsync(string topic, string payload)
+    public async Task DisconnectAsync()
     {
-        throw new NotImplementedException();
+        await _client.DisconnectAsync();
     }
 
-    public Task SubscribeAsync(string topic)
+    public async Task SubscribeAsync(string topic)
     {
-        throw new NotImplementedException();
+        var topicFilter = new MqttTopicFilterBuilder()
+            .WithTopic(topic)
+            .Build();
+
+        await _client.SubscribeAsync(topicFilter);
+    }
+
+    private Task HandleMessage(MqttApplicationMessageReceivedEventArgs eventArgs)
+    {
+        string json = eventArgs.ApplicationMessage.ConvertPayloadToString();
+        SensorData? msg = SensorData.FromJson(json);
+
+        if (msg is null)
+            return Task.CompletedTask;
+
+        msg.Topic = eventArgs.ApplicationMessage.Topic;
+        OnMessageReceived?.Invoke(msg);
+        return Task.CompletedTask;
     }
 }
