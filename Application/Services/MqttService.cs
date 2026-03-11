@@ -10,7 +10,7 @@ public class MqttService : IMqttService
     private readonly string _broker;
     private readonly int _port;
 
-    public event Action<SensorData> OnMessageReceived;
+    public event Action<SensorData>? OnMessageReceived;
 
     public MqttService(string broker = "localhost", int port = 1883)
     {
