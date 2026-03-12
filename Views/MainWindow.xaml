@@ -6,8 +6,68 @@
         xmlns:local="clr-namespace:UmweltMonitor3000"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="MainWindow" Height="450" Width="800">
+        Title="UmweltMonitor3000" Height="700" Width="1100"
+        Background="#121212">
     <Grid>
-
+        <TabControl TabStripPlacement="Left"
+                    
+                    Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                     materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
+                        
+            <TabItem Height="70"
+                     >
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <materialDesign:PackIcon Kind="Connection"
+                                                 HorizontalAlignment="Center"
+                                                 Height="24"
+                                                 Width="24"
+                                                 Foreground="White"/>
+                        <TextBlock Text="Broker Verbindung"
+                                   FontSize="15"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <materialDesign:Card Background="#1E1E1E"
+                                     Margin="10"
+                                     materialDesign:ElevationAssist.Elevation="Dp5">
+                    
+                </materialDesign:Card>
+            </TabItem>
+            
+            <TabItem Height="70">
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <materialDesign:PackIcon Kind="ChartArc"
+                                    HorizontalAlignment="Center"
+                                    Height="24"
+                                    Width="24"
+                                    Foreground="White"/>
+                        <TextBlock Text="Statistiken"
+                      FontSize="15"
+                      FontWeight="Bold"
+                      Foreground="White"/>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+            
+            <TabItem Height="70">
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <materialDesign:PackIcon Kind="Connection"
+                                    HorizontalAlignment="Center"
+                                    Height="24"
+                                    Width="24"
+                                    Foreground="White"/>
+                        <TextBlock Text="Platzhalter"
+                      FontSize="15"
+                      FontWeight="Bold"
+                      Foreground="White"/>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+            
+        </TabControl>
     </Grid>
 </Window>
