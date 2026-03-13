@@ -8,8 +8,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:CustomColorTheme PrimaryColor="#80CBC4"
-                                                 SecondaryColor="AAD8D3"
-                                                 BaseTheme="Light" />
+                                                 SecondaryColor="#AAD8D3"
+                                                 BaseTheme="Dark" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
                 

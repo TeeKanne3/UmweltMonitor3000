@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UmweltMonitor3000.Application.Services;
 
 namespace UmweltMonitor3000
 {
@@ -19,6 +20,7 @@ namespace UmweltMonitor3000
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += (_, _) => DarkTitleBar.TrySetDarkTitleBar(this);
         }
     }
 }
