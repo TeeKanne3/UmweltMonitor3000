@@ -6,8 +6,365 @@
         xmlns:local="clr-namespace:UmweltMonitor3000"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="UmweltMonitor3000"
+        WindowStyle="SingleBorderWindow"
+        Height="700"
+        MaxHeight="700"
+        Width="1100"
+        MaxWidth="1100"
+        Icon="/Assets/Icon/AppIcon.ico">
+    <Window.Resources>
+        <Style x:Key="SidebarTabItem"
+               TargetType="TabItem"
+               BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}">
+            <Setter Property="Height"
+                    Value="50" />
+            <Setter Property="Foreground"
+                    Value="Gray" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border"
+                                Background="Transparent"
+                                CornerRadius="5"
+                                Margin="10,2,10,2">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="10,0">
+                                <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                                         VerticalAlignment="Center"
+                                                         Width="20"
+                                                         Height="20" />
+                                <ContentPresenter ContentSource="Header"
+                                                  VerticalAlignment="Center"
+                                                  Margin="15,0,0,0"
+                                                  />
+                            </StackPanel>
+                        </Border>
 
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected"
+                                     Value="True">
+                                <Setter TargetName="Border"
+                                        Property="Background"
+                                        Value="#80CBC4" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                                <Setter TargetName="Border"
+                                        Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="10"
+                                                          ShadowDepth="2"
+                                                          Opacity="0.3"
+                                                          Color="#9c27b0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TabControl TabStripPlacement="Left"
+                    Background="#1a2035"
+                    Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                    materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
+
+
+            <TabItem Height="50"
+                     Width="200"
+                     Style="{StaticResource SidebarTabItem}"
+                     Header="Verbindung"
+                     Tag="Connection">
+                <!--<TabItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon Kind="Connection"
+                                                 Height="24"
+                                                 Width="24"
+                                                 Margin="-40,0,0,0"
+                                                 Foreground="White" />
+
+                        <TextBlock Text="Verbindung"
+                                   FontSize="14"
+                                   FontFamily="Inter"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="1"
+                                   Foreground="White" />
+                    </Grid>
+
+                </TabItem.Header>-->
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="MQTT-Dashboard"
+                               FontFamily="Inter"
+                               FontSize="20"
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"
+                               FontWeight="SemiBold" />
+
+                    <materialDesign:Card Background="#181d29"
+                                         materialDesign:ElevationAssist.Elevation="Dp3"
+                                         Margin="10,0,10,10"
+                                         Grid.Row="1"
+                                         UniformCornerRadius="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="70" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+
+
+                            <TextBlock Text="Verbinden"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15" />
+
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1">
+                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                         Height="50"
+                                         Width="270"
+                                         materialDesign:HintAssist.Hint="IP-Adresse"
+                                         
+                                         materialDesign:HintAssist.Background="#212121"
+                                         materialDesign:HintAssist.HintPaddingBrush="Transparent"
+                                         HorizontalAlignment="Left"
+                                         Margin="10,0,0,0" />
+                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                         Height="50"
+                                         Width="60"
+                                         materialDesign:HintAssist.Hint="Port"
+                                         materialDesign:HintAssist.Background="#212121"
+                                         materialDesign:HintAssist.HintPaddingBrush="Transparent"
+                                         HorizontalAlignment="Left"
+                                         Margin="10,0,0,0" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Left"
+                                        Margin="10,0,0,0">
+                                <materialDesign:PackIcon Kind="ConnectWithoutContact"
+                                                         Height="24"
+                                                         Width="24"
+                                                         Margin="0,25,5,0" />
+
+                                <Button Content="Verbindung herstellen!"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                            </StackPanel>
+
+
+
+                            <StackPanel Grid.Row="3"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Left"
+                                        Margin="10,0,0,0">
+                                <materialDesign:PackIcon Kind="LocalAreaNetworkDisconnect"
+                                                         Height="24"
+                                                         Width="24"
+                                                         Margin="0,25,5,0" />
+
+                                <Button Content="Verbindung trennen!"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                            </StackPanel>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Background="#181d29"
+                                         Margin="0,0,10,10"
+                                         UniformCornerRadius="20"
+                                         Grid.Column="1"
+                                         materialDesign:ElevationAssist.Elevation="Dp3"
+                                         Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="MQTT Verbindungsstatus"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15" />
+
+                            <TextBlock Text="Status:"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="1" />
+
+                            <TextBlock Text="Up-Time:"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="2" />
+
+                            <TextBlock Text="Broker:"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="3" />
+                            <TextBlock Text="Empfangene Nachrichten:"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="4" />
+
+                            <TextBlock Text="Fehler:"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="5" />
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Background="#181d29"
+                                         Margin="10,0,10,10"
+                                         materialDesign:ElevationAssist.Elevation="Dp3"
+                                         Grid.Row="2"
+                                         UniformCornerRadius="20"
+                                         Grid.ColumnSpan="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Logs"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15" />
+                            <DataGrid Grid.Row="1"
+                                      Style="{StaticResource MaterialDesignDataGrid}"
+                                      Background="#141923"
+                                      Margin="10,0,10,10">
+                               
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Zeitstempel" />
+                                    <DataGridTextColumn Header="Log-Typ" />
+                                    <DataGridTextColumn Header="Richtung" />
+                                    <DataGridTextColumn Header="Topic" />
+                                    <DataGridTextColumn Header="Text" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+            </TabItem>
+
+            <TabItem Height="50"
+                     Width="200"
+                     Style="{StaticResource SidebarTabItem}"
+                     Header="Pflanzen"
+                     Tag="Plant">
+                <!--<TabItem.Header>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon Kind="Plant"
+                                                 Height="24"
+                                                 Width="24"
+                                                 Margin="-40,0,0,0"
+                                                 Foreground="White" />
+
+                        <TextBlock Text="Pflanzen"
+                                   FontSize="14"
+                                   Margin="0,0,20,0"
+                                   FontFamily="Inter"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="1"
+                                   Foreground="White" />
+                    </Grid>
+
+                </TabItem.Header>-->
+
+                <materialDesign:Card Background="#181d29"
+                                     Margin="5"
+                                     materialDesign:ElevationAssist.Elevation="Dp3">
+
+                </materialDesign:Card>
+
+            </TabItem>
+
+
+            <TabItem Height="50"
+                     Width="200"
+                     Style="{StaticResource SidebarTabItem}"
+                     Header="Statistiken"
+                     Tag="ChartAreasplineVariant">
+                <!--<TabItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon Kind="ChartAreasplineVariant"
+                                                 Height="24"
+                                                 Width="24"
+                                                 Margin="-40,0,0,0"
+                                                 Foreground="White" />
+
+                        <TextBlock Text="Statistiken"
+                                   FontSize="14"
+                                   FontFamily="Inter"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="1"
+                                   Margin="0,0,10,0"
+                                   Foreground="White" />
+                    </Grid>
+                </TabItem.Header>-->
+                <materialDesign:Card Background="#181d29"
+                                     Margin="5"
+                                     materialDesign:ElevationAssist.Elevation="Dp3">
+
+                </materialDesign:Card>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>
