@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using MaterialDesignThemes.Wpf;
+using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UmweltMonitor3000.Application.Models;
 using UmweltMonitor3000.Application.Services;
 
 namespace UmweltMonitor3000
