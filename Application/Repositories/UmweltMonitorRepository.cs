@@ -1,15 +1,89 @@
-﻿using UmweltMonitor3000.Application.Interfaces;
+﻿using System.IO;
+using System.Text.Json;
+using UmweltMonitor3000.Application.Interfaces;
+using UmweltMonitor3000.Application.Models;
 
 namespace UmweltMonitor3000.Application.Repositories;
 
 public class UmweltMonitorRepository : IUmweltMonitorRepository
 {
-    public Task SaveSensorDataAsync(string sensorId, string data)
+    private readonly string _jsonFilePath = $"sensor_data.json";
+
+    private readonly JsonSerializerOptions _options = new()
     {
-        throw new NotImplementedException();
+        WriteIndented = true
+    };
+
+    public async Task SaveSensorDataAsync(string sensorId, string data)
+    {
+        var sensorData = ParseSensorData(sensorId, data);
+
+        var allData = await LoadAllAsync();
+
+        allData.Add(sensorData);
+
+        await SaveAllAsync(allData);
     }
-    public Task<string> GetSensorDataAsync(string sensorId)
+    public async Task<string> GetSensorDataAsync(string sensorId)
     {
-        throw new NotImplementedException();
+        var allData = await LoadAllAsync();
+
+        var result = allData
+            .Where(x => x.SensorType == sensorId)
+            .OrderByDescending(x => x.TimeStamp)
+            .FirstOrDefault();
+
+        return result != null
+            ? JsonSerializer.Serialize(result, _options)
+            : string.Empty;
+    }
+
+    private async Task<List<SensorData>> LoadAllAsync()
+    {
+        if (!File.Exists(_jsonFilePath))
+            return new List<SensorData>();
+
+        var json = await File.ReadAllTextAsync(_jsonFilePath);
+
+        if (string.IsNullOrWhiteSpace(json))
+            return new List<SensorData>();
+
+        return JsonSerializer.Deserialize<List<SensorData>>(json) ?? new List<SensorData>();
+    }
+
+    private async Task SaveAllAsync(List<SensorData> data)
+    {
+        var json = JsonSerializer.Serialize(data, _options);
+        await File.WriteAllTextAsync(_jsonFilePath, json);
+    }
+
+    private SensorData ParseSensorData(string sensorId, string payload)
+    {
+        double value = 0;
+
+        if (double.TryParse(payload, out var parsedValue))
+        {
+            value = parsedValue;
+        }
+        else
+        {
+            try
+            {
+                var doc = JsonDocument.Parse(payload);
+                value = doc.RootElement.GetProperty("value").GetDouble();
+            }
+            catch
+            {
+                throw new Exception("Error to parse");
+            }
+        }
+
+        return new SensorData
+        {
+            Id = Guid.NewGuid(),
+            SensorType = sensorId,
+            Value = value,
+            TimeStamp = DateTime.UtcNow,
+        };
     }
 }
