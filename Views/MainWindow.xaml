@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UmweltMonitor3000"
         xmlns:Models="clr-namespace:UmweltMonitor3000.Application.Models"
+        xmlns:vm="clr-namespace:UmweltMonitor3000.Application.ViewModels"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="UmweltMonitor3000"
         WindowStyle="SingleBorderWindow"
+        d:DataContext=""
         Height="700"
         MaxHeight="700"
+        DataContext="MainViewModel"
         Width="1100"
         MaxWidth="1100"
         Icon="/Assets/Icon/AppIcon.ico">
@@ -19,7 +22,8 @@
                     Background="#1a2035"
                     Style="{StaticResource MaterialDesignNavigationRailTabControl}"
                     materialDesign:ColorZoneAssist.Mode="Standard"
-                    materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
+                    materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
+                    >
             <materialDesign:NavigationRailAssist.FloatingContent>
                 <Image Source="/Assets/Icon/FloatingContent.ico"
                        Height="32"
@@ -28,6 +32,10 @@
             </materialDesign:NavigationRailAssist.FloatingContent>
             <TabItem Height="50"
                      Width="200">
+                <TabItem.DataContext>
+                    <vm:MqttViewModel/>
+                </TabItem.DataContext>
+                
                 <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -121,7 +129,7 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung herstellen!"
-                                        Click="Connect_Click"
+                                        Command="{Binding TestCommand}"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
 
@@ -137,7 +145,6 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung trennen!"
-                                        Click="Disconnect_Click"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
                         </Grid>
@@ -243,6 +250,9 @@
 
             <TabItem Height="50"
                      Width="200">
+                <TabItem.DataContext>
+                    <vm:PlantViewModel/>
+                </TabItem.DataContext>
                 <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -742,6 +752,9 @@
 
             <TabItem Height="50"
                      Width="200">
+                <TabItem.DataContext>
+                    <vm:StatisticViewModel/>
+                </TabItem.DataContext>
                 <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
