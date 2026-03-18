@@ -2,6 +2,7 @@
 
 public interface IMqttService
 {
+    event Action<string, string>? MessageReceived;
     Task ConnectAsync(string brokerAddress, int brokerPort, string clientId, string username, string password);
     Task SubscribeAsync(string topic);
     Task PublishAsync(string topic, string payload);

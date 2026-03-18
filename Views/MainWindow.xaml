@@ -172,6 +172,7 @@
                                                          Margin="0,25,5,0" />
 
                                 <Button Content="Verbindung herstellen!"
+                                        Click="Connect_Click"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
 
@@ -187,6 +188,7 @@
                                                          Margin="0,25,5,0" />
 
                                 <Button Content="Verbindung trennen!"
+                                        Click="Disconnect_Click"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
                         </Grid>
