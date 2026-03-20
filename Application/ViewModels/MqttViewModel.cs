@@ -14,13 +14,10 @@ public partial class MqttViewModel : ObservableObject
 {
     [ObservableProperty]
     public partial int IpAdresse { get; set; }
-
     [ObservableProperty]
     public partial int Port { get; set; }
-
     [ObservableProperty]
     public partial ObservableCollection<TopicLog> LogCollection { get; set; }
-
     [ObservableProperty]
     public partial string Status { get; set; }
     [ObservableProperty]

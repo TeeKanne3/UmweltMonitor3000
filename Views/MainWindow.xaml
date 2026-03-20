@@ -12,18 +12,16 @@
         WindowStyle="SingleBorderWindow"
         d:DataContext=""
         Height="700"
-        MaxHeight="700"
+        MinHeight="700"
         DataContext="MainViewModel"
-        Width="1100"
-        MaxWidth="1100"
+        MinWidth="1100"
         Icon="/Assets/Icon/AppIcon.ico">
     <Grid>
         <TabControl TabStripPlacement="Left"
                     Background="#1a2035"
                     Style="{StaticResource MaterialDesignNavigationRailTabControl}"
                     materialDesign:ColorZoneAssist.Mode="Standard"
-                    materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
-                    >
+                    materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
             <materialDesign:NavigationRailAssist.FloatingContent>
                 <Image Source="/Assets/Icon/FloatingContent.ico"
                        Height="32"
@@ -33,9 +31,9 @@
             <TabItem Height="50"
                      Width="200">
                 <TabItem.DataContext>
-                    <vm:MqttViewModel/>
+                    <vm:MqttViewModel />
                 </TabItem.DataContext>
-                
+
                 <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -129,7 +127,6 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung herstellen!"
-                                        Command="{Binding TestCommand}"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
 
@@ -251,7 +248,7 @@
             <TabItem Height="50"
                      Width="200">
                 <TabItem.DataContext>
-                    <vm:PlantViewModel/>
+                    <vm:PlantViewModel />
                 </TabItem.DataContext>
                 <TabItem.Header>
                     <Grid>
@@ -280,8 +277,143 @@
                 <materialDesign:Card Background="#181d29"
                                      Margin="10"
                                      materialDesign:ElevationAssist.Elevation="Dp3">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="450" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <DataGrid Margin="10"
+                                  ItemsSource="{Binding PlantCollection}"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserResizeRows="False"
+                                  CanUserSortColumns="False"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  AutoGenerateColumns="False"
+                                  VerticalAlignment="Top"
+                                  Height="450"
+                                  RowHeight="40">
 
-                    <WrapPanel Margin="10"
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="PflanzenID"
+                                                    Binding="{Binding PlantID}"
+                                                    IsReadOnly="True" />
+                                <DataGridTemplateColumn Header="Status">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Width="20"
+                                                    Height="20"
+                                                    CornerRadius="20"
+                                                    BorderThickness="1"
+                                                    BorderBrush="Black">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                         Value="Low">
+                                                                <Setter Property="Background"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                         Value="Mid">
+                                                                <Setter Property="Background"
+                                                                        Value="Yellow" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                         Value="High">
+                                                                <Setter Property="Background"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="Bezeichnung"
+                                                    Binding="{Binding Name}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Feuchtigkeit Sensorwert"
+                                                    Binding="{Binding MoistureSensor}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Feuchtigkeit %"
+                                                    Binding="{Binding MoisturePercent, StringFormat={}{0}%}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Letzte Aktualisierung"
+                                                    Binding="{Binding LastUpdate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Batteriewert (optional Backend)"
+                                                    Binding="{Binding BatteryState, StringFormat={}{0}%}"
+                                                    IsReadOnly="True" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Grid Grid.Row="1"
+                              Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                            </Grid.RowDefinitions>
+
+
+                            <StackPanel Orientation="Horizontal">
+                                <Border Background="Red"
+                                        Height="20"
+                                        Width="20"
+                                        CornerRadius="10"
+                                        Margin="0,0,10,0" />
+
+                                <TextBlock Text="Status Rot = 0% - 30%"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1">
+                                <Border Background="Yellow"
+                                        Height="20"
+                                        Width="20"
+                                        CornerRadius="10"
+                                        Margin="0,0,10,0" />
+                                <TextBlock Text="Status Gelb = 31%-70%"
+                                           VerticalAlignment="Center"
+                                           FontSize="15"
+                                           FontWeight="SemiBold" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="2">
+                                <Border Background="Green"
+                                        Height="20"
+                                        Width="20"
+                                        CornerRadius="10"
+                                        Margin="0,0,10,0" />
+
+                                <TextBlock Text="Status Grün = 71%-100%"
+                                           VerticalAlignment="Center"
+                                           FontSize="15"
+                                           FontWeight="SemiBold" />
+
+                            </StackPanel>
+
+
+
+
+
+
+                        </Grid>
+                    </Grid>
+                    <!--<WrapPanel Margin="10"
                                HorizontalAlignment="Stretch">
                         <materialDesign:Card Height="197"
                                              Width="273"
@@ -743,7 +875,7 @@
                             </Grid>
 
                         </materialDesign:Card>
-                    </WrapPanel>
+                    </WrapPanel>-->
 
                 </materialDesign:Card>
 
@@ -753,7 +885,7 @@
             <TabItem Height="50"
                      Width="200">
                 <TabItem.DataContext>
-                    <vm:StatisticViewModel/>
+                    <vm:StatisticViewModel />
                 </TabItem.DataContext>
                 <TabItem.Header>
                     <Grid>

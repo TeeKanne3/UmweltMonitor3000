@@ -13,22 +13,18 @@ using System.Windows.Shapes;
 using UmweltMonitor3000.Application.Models;
 using UmweltMonitor3000.Application.ViewModels;
 using UmweltMonitor3000.Application.Services;
-using UmweltMonitor3000.Application.ViewModels;
 
-namespace UmweltMonitor3000
+namespace UmweltMonitor3000;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        private readonly MainWindowLogic _logic = new();
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            Loaded += (_, _) => DarkTitleBar.TrySetDarkTitleBar(this);
-            DataContext = new MainViewModel();
-        }
+        InitializeComponent();
+        Loaded += (_, _) => DarkTitleBar.TrySetDarkTitleBar(this);
+        DataContext = new MainViewModel();
     }
 }
