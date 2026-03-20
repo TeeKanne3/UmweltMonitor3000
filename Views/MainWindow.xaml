@@ -4,80 +4,37 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UmweltMonitor3000"
+        xmlns:Models="clr-namespace:UmweltMonitor3000.Application.Models"
+        xmlns:vm="clr-namespace:UmweltMonitor3000.Application.ViewModels"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="UmweltMonitor3000"
         WindowStyle="SingleBorderWindow"
+        d:DataContext=""
         Height="700"
-        MaxHeight="700"
-        Width="1100"
-        MaxWidth="1100"
+        MinHeight="700"
+        DataContext="MainViewModel"
+        MinWidth="1100"
         Icon="/Assets/Icon/AppIcon.ico">
-    <Window.Resources>
-        <Style x:Key="SidebarTabItem"
-               TargetType="TabItem"
-               BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}">
-            <Setter Property="Height"
-                    Value="50" />
-            <Setter Property="Foreground"
-                    Value="Gray" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Border"
-                                Background="Transparent"
-                                CornerRadius="5"
-                                Margin="10,2,10,2">
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="10,0">
-                                <materialDesign:PackIcon Kind="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         VerticalAlignment="Center"
-                                                         Width="20"
-                                                         Height="20" />
-                                <ContentPresenter ContentSource="Header"
-                                                  VerticalAlignment="Center"
-                                                  Margin="15,0,0,0"
-                                                  />
-                            </StackPanel>
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected"
-                                     Value="True">
-                                <Setter TargetName="Border"
-                                        Property="Background"
-                                        Value="#80CBC4" />
-                                <Setter Property="Foreground"
-                                        Value="White" />
-                                <Setter TargetName="Border"
-                                        Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect BlurRadius="10"
-                                                          ShadowDepth="2"
-                                                          Opacity="0.3"
-                                                          Color="#9c27b0" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
     <Grid>
         <TabControl TabStripPlacement="Left"
                     Background="#1a2035"
                     Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                    materialDesign:ColorZoneAssist.Mode="Standard"
                     materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
-
-
+            <materialDesign:NavigationRailAssist.FloatingContent>
+                <Image Source="/Assets/Icon/FloatingContent.ico"
+                       Height="32"
+                       Width="32"
+                       Margin="0,10,0,10" />
+            </materialDesign:NavigationRailAssist.FloatingContent>
             <TabItem Height="50"
-                     Width="200"
-                     Style="{StaticResource SidebarTabItem}"
-                     Header="Verbindung"
-                     Tag="Connection">
-                <!--<TabItem.Header>
+                     Width="200">
+                <TabItem.DataContext>
+                    <vm:MqttViewModel />
+                </TabItem.DataContext>
+
+                <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -99,8 +56,7 @@
                                    Foreground="White" />
                     </Grid>
 
-                </TabItem.Header>-->
-
+                </TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -147,7 +103,6 @@
                                          Height="50"
                                          Width="270"
                                          materialDesign:HintAssist.Hint="IP-Adresse"
-                                         
                                          materialDesign:HintAssist.Background="#212121"
                                          materialDesign:HintAssist.HintPaddingBrush="Transparent"
                                          HorizontalAlignment="Left"
@@ -169,10 +124,9 @@
                                 <materialDesign:PackIcon Kind="ConnectWithoutContact"
                                                          Height="24"
                                                          Width="24"
-                                                         Margin="0,25,5,0" />
+                                                         Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung herstellen!"
-                                        Click="Connect_Click"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
 
@@ -185,10 +139,9 @@
                                 <materialDesign:PackIcon Kind="LocalAreaNetworkDisconnect"
                                                          Height="24"
                                                          Width="24"
-                                                         Margin="0,25,5,0" />
+                                                         Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung trennen!"
-                                        Click="Disconnect_Click"
                                         Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
                         </Grid>
@@ -278,7 +231,7 @@
                                       Style="{StaticResource MaterialDesignDataGrid}"
                                       Background="#141923"
                                       Margin="10,0,10,10">
-                               
+
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Zeitstempel" />
                                     <DataGridTextColumn Header="Log-Typ" />
@@ -293,19 +246,18 @@
             </TabItem>
 
             <TabItem Height="50"
-                     Width="200"
-                     Style="{StaticResource SidebarTabItem}"
-                     Header="Pflanzen"
-                     Tag="Plant">
-                <!--<TabItem.Header>
-
+                     Width="200">
+                <TabItem.DataContext>
+                    <vm:PlantViewModel />
+                </TabItem.DataContext>
+                <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <materialDesign:PackIcon Kind="Plant"
+                        <materialDesign:PackIcon Kind="Tree"
                                                  Height="24"
                                                  Width="24"
                                                  Margin="-40,0,0,0"
@@ -313,19 +265,617 @@
 
                         <TextBlock Text="Pflanzen"
                                    FontSize="14"
-                                   Margin="0,0,20,0"
                                    FontFamily="Inter"
                                    FontWeight="SemiBold"
                                    VerticalAlignment="Center"
+                                   Margin="0,0,15,0"
                                    Grid.Column="1"
                                    Foreground="White" />
                     </Grid>
-
-                </TabItem.Header>-->
+                </TabItem.Header>
 
                 <materialDesign:Card Background="#181d29"
-                                     Margin="5"
+                                     Margin="10"
                                      materialDesign:ElevationAssist.Elevation="Dp3">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="450" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <DataGrid Margin="10"
+                                  ItemsSource="{Binding PlantCollection}"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserResizeRows="False"
+                                  CanUserSortColumns="False"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  AutoGenerateColumns="False"
+                                  VerticalAlignment="Top"
+                                  Height="450"
+                                  RowHeight="40">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="PflanzenID"
+                                                    Binding="{Binding PlantID}"
+                                                    IsReadOnly="True" />
+                                <DataGridTemplateColumn Header="Status">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Width="20"
+                                                    Height="20"
+                                                    CornerRadius="20"
+                                                    BorderThickness="1"
+                                                    BorderBrush="Black">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                         Value="Low">
+                                                                <Setter Property="Background"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                         Value="Mid">
+                                                                <Setter Property="Background"
+                                                                        Value="Yellow" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                         Value="High">
+                                                                <Setter Property="Background"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="Bezeichnung"
+                                                    Binding="{Binding Name}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Feuchtigkeit Sensorwert"
+                                                    Binding="{Binding MoistureSensor}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Feuchtigkeit %"
+                                                    Binding="{Binding MoisturePercent, StringFormat={}{0}%}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Letzte Aktualisierung"
+                                                    Binding="{Binding LastUpdate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                                    IsReadOnly="True" />
+                                <DataGridTextColumn Header="Batteriewert (optional Backend)"
+                                                    Binding="{Binding BatteryState, StringFormat={}{0}%}"
+                                                    IsReadOnly="True" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Grid Grid.Row="1"
+                              Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                            </Grid.RowDefinitions>
+
+
+                            <StackPanel Orientation="Horizontal">
+                                <Border Background="Red"
+                                        Height="20"
+                                        Width="20"
+                                        CornerRadius="10"
+                                        Margin="0,0,10,0" />
+
+                                <TextBlock Text="Status Rot = 0% - 30%"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1">
+                                <Border Background="Yellow"
+                                        Height="20"
+                                        Width="20"
+                                        CornerRadius="10"
+                                        Margin="0,0,10,0" />
+                                <TextBlock Text="Status Gelb = 31%-70%"
+                                           VerticalAlignment="Center"
+                                           FontSize="15"
+                                           FontWeight="SemiBold" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="2">
+                                <Border Background="Green"
+                                        Height="20"
+                                        Width="20"
+                                        CornerRadius="10"
+                                        Margin="0,0,10,0" />
+
+                                <TextBlock Text="Status Grün = 71%-100%"
+                                           VerticalAlignment="Center"
+                                           FontSize="15"
+                                           FontWeight="SemiBold" />
+
+                            </StackPanel>
+
+
+
+
+
+
+                        </Grid>
+                    </Grid>
+                    <!--<WrapPanel Margin="10"
+                               HorizontalAlignment="Stretch">
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="0,0,0,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 1" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="Transparent">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" 
+                                                   Foreground="White"/>
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White" />
+                                </StatusBar>
+
+                            </Grid>
+                        </materialDesign:Card>
+
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="10,0,10,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 2" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="0,0,0,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 3" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="0,0,0,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 4" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="10,0,10,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 5" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="0,0,0,10"
+                                             Background="#1a2035"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 6" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Height="50"
+                                           Grid.Row="2"
+                                           Background="Transparent">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White" />
+                                </StatusBar>
+
+                            </Grid>
+
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="0,0,0,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 7" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="10,0,10,10"
+                                             Background="#141923"
+                                             UniformCornerRadius="20"
+                                             materialDesign:ElevationAssist.Elevation="Dp5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 8" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Height="197"
+                                             Width="273"
+                                             Margin="0,0,0,10"
+                                             Background="#141923"
+                                             materialDesign:ElevationAssist.Elevation="Dp5"
+                                             UniformCornerRadius="20">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <materialDesign:ColorZone Mode="SecondaryMid"
+                                                          Height="40">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Width="32"
+                                                                 Height="32"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="Gardening" />
+                                        <TextBlock Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                   Text="Pflanze 9" />
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
+
+                                <StatusBar Width="300"
+                                           Grid.Row="2"
+                                           Background="#aad8d3">
+
+                                    <StatusBarItem Content="Feuchtigkeit:"
+                                                   FontWeight="SemiBold" />
+                                    <Separator />
+                                    <StatusBarItem>
+                                        <ProgressBar Width="120"
+                                                     Height="8"
+                                                     Value="65" />
+                                    </StatusBarItem>
+                                    <Separator />
+                                    <StatusBarItem Content="65%"
+                                                   FontWeight="SemiBold" />
+                                </StatusBar>
+
+                            </Grid>
+
+                        </materialDesign:Card>
+                    </WrapPanel>-->
 
                 </materialDesign:Card>
 
@@ -333,11 +883,11 @@
 
 
             <TabItem Height="50"
-                     Width="200"
-                     Style="{StaticResource SidebarTabItem}"
-                     Header="Statistiken"
-                     Tag="ChartAreasplineVariant">
-                <!--<TabItem.Header>
+                     Width="200">
+                <TabItem.DataContext>
+                    <vm:StatisticViewModel />
+                </TabItem.DataContext>
+                <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -356,12 +906,13 @@
                                    FontWeight="SemiBold"
                                    VerticalAlignment="Center"
                                    Grid.Column="1"
-                                   Margin="0,0,10,0"
                                    Foreground="White" />
                     </Grid>
-                </TabItem.Header>-->
+
+                </TabItem.Header>
+
                 <materialDesign:Card Background="#181d29"
-                                     Margin="5"
+                                     Margin="10"
                                      materialDesign:ElevationAssist.Elevation="Dp3">
 
                 </materialDesign:Card>

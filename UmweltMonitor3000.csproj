@@ -7,10 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
+	  <LangVersion>Preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\Icon\AppIcon.ico" />
+    <None Remove="Assets\Icon\FloatingContent.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +27,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\Icon\AppIcon.ico" />
+    <Resource Include="Assets\Icon\FloatingContent.ico" />
   </ItemGroup>
 
   <ItemGroup>
