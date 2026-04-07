@@ -45,9 +45,9 @@ public partial class MqttViewModel : ObservableObject
     [ObservableProperty]
     private string _upTime = "--:--:--";
 
-    public MqttViewModel()
+    public MqttViewModel(MainWindowLogic logic)
     {
-        _logic = new MainWindowLogic();
+        _logic = logic;
         _logic.LogMessage += OnLogMessage;
         _logic.ErrorLogged += OnErrorLogged;
         _logic.MessageLogged += OnMessageLogged;
@@ -76,7 +76,10 @@ public partial class MqttViewModel : ObservableObject
             ReceivedMessage = LogCollection.Count(l => l.Direction == "IN" && l.Topic != "-");
             ErrorCount = state.ErrorCount;
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _logic.LogError($"Fehler beim Laden der Logs: {ex.Message}");
+        }
     }
 
     private void SaveLogs()
@@ -89,7 +92,7 @@ public partial class MqttViewModel : ObservableObject
         _ = Task.Run(() =>
         {
             try { File.WriteAllText(LogFilePath, JsonSerializer.Serialize(state, _jsonOptions)); }
-            catch { }
+            catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Logs: {ex.Message}"); }
         });
     }
 

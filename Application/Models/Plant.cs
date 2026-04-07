@@ -7,7 +7,10 @@ public partial class Plant : ObservableObject
     [ObservableProperty]
     private int _plantID;
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MqttTopic))]
     private string _name = string.Empty;
+
+    public string MqttTopic => $"umweltmonitor/sensor/{Name}";
     [ObservableProperty]
     private int _moistureSensor;
     [ObservableProperty]

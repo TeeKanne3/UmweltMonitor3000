@@ -46,9 +46,9 @@ public class MainWindowLogic
 
             Log($"Mqtt is connected to {ip}:{port}");
         }
-        catch
+        catch (Exception ex)
         {
-            LogError($"Error while connecting to {ip}:{port}");
+            LogError($"Error while connecting to {ip}:{port}: {ex.Message}");
         }
     }
 
@@ -71,7 +71,7 @@ public class MainWindowLogic
         LogMessage?.Invoke(message);
     }
 
-    private void LogError(string message)
+    public void LogError(string message)
     {
         LogMessage?.Invoke(message);
         ErrorLogged?.Invoke(message);
