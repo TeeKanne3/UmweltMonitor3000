@@ -42,6 +42,12 @@ public partial class MqttViewModel : ObservableObject
         _logic = new MainWindowLogic();
         _logic.LogMessage += OnLogMessage;
         _logic.MessageLogged += OnMessageLogged;
+
+        _upTimer.Tick += (_, _) =>
+        {
+            _elapsed = _elapsed.Add(TimeSpan.FromSeconds(1));
+            UpTime = _elapsed.ToString(@"hh\:mm\:ss");
+        };
     }
  
     [RelayCommand]
@@ -53,9 +59,12 @@ public partial class MqttViewModel : ObservableObject
         Status = IsConnected ? "Verbunden" : "Getrennt";
         Broker = IsConnected ? $"{IpAdresse}:{Port}" : "-";
 
-        _elapsed = TimeSpan.Zero;
-        UpTime = "00:00:00";
-        _upTimer.Start();
+        if (IsConnected)
+        {
+            _elapsed = TimeSpan.Zero;
+            UpTime = "00:00:00";
+            _upTimer.Start();
+        }
     }
  
     [RelayCommand]
