@@ -60,12 +60,6 @@ public class MainWindowLogic
         Log($"Mqtt is Disconnected!");
     }
 
-    public async Task Subscribe(string topic)
-    {
-        await _mqttService.SubscribeAsync(topic);
-        Log($"Subscribed to topic: {topic}");
-    }
-
     private void Log(string message)
     {
         LogMessage?.Invoke(message);

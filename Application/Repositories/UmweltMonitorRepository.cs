@@ -16,6 +16,8 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
         WriteIndented = true
     };
 
+    private const int MaxSensorEntries = 1000;
+
     public async Task SaveSensorDataAsync(string sensorId, string data)
     {
         var sensorData = ParseSensorData(sensorId, data);
@@ -26,6 +28,9 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
         var allData = await LoadAllAsync();
 
         allData.Add(sensorData);
+
+        if (allData.Count > MaxSensorEntries)
+            allData = allData.Skip(allData.Count - MaxSensorEntries).ToList();
 
         await SaveAllAsync(allData);
     }

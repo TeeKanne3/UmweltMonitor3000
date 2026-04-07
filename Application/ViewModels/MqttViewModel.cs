@@ -16,7 +16,9 @@ namespace UmweltMonitor3000.Application.ViewModels;
 public partial class MqttViewModel : ObservableObject
 {
     private const string LogFilePath = "logs.json";
+    private const int MaxLogEntries = 500;
     private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+    private readonly object _saveLock = new();
 
     private readonly MainWindowLogic _logic;
 
@@ -24,7 +26,7 @@ public partial class MqttViewModel : ObservableObject
     private TimeSpan _elapsed = TimeSpan.Zero;
 
     [ObservableProperty]
-    public string _ipAdresse = "localhost";
+    private string _ipAdresse = "localhost";
     [ObservableProperty]
     private int _port = 1883;
     [ObservableProperty]
@@ -91,8 +93,11 @@ public partial class MqttViewModel : ObservableObject
         };
         _ = Task.Run(() =>
         {
-            try { File.WriteAllText(LogFilePath, JsonSerializer.Serialize(state, _jsonOptions)); }
-            catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Logs: {ex.Message}"); }
+            lock (_saveLock)
+            {
+                try { File.WriteAllText(LogFilePath, JsonSerializer.Serialize(state, _jsonOptions)); }
+                catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Logs: {ex.Message}"); }
+            }
         });
     }
 
@@ -155,6 +160,9 @@ public partial class MqttViewModel : ObservableObject
                 Payload = message
             });
 
+            while (LogCollection.Count > MaxLogEntries)
+                LogCollection.RemoveAt(LogCollection.Count - 1);
+
             ReceivedMessage = LogCollection.Count(l => l.Direction == "IN" && l.Topic != "-");
             SaveLogs();
         });
@@ -173,6 +181,10 @@ public partial class MqttViewModel : ObservableObject
                 Topic = topic,
                 Payload = payload
             });
+
+            while (LogCollection.Count > MaxLogEntries)
+                LogCollection.RemoveAt(LogCollection.Count - 1);
+
             ReceivedMessage++;
             SaveLogs();
         });

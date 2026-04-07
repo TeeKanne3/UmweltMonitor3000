@@ -11,6 +11,7 @@ public partial class PlantViewModel : ObservableObject
 {
     private const string PlantsFilePath = "plants.json";
     private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+    private readonly object _saveLock = new();
     private readonly MainWindowLogic _logic;
 
     [ObservableProperty]
@@ -55,8 +56,11 @@ public partial class PlantViewModel : ObservableObject
         var snapshot = PlantCollection.ToList();
         _ = Task.Run(() =>
         {
-            try { File.WriteAllText(PlantsFilePath, JsonSerializer.Serialize(snapshot, _jsonOptions)); }
-            catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Pflanzen: {ex.Message}"); }
+            lock (_saveLock)
+            {
+                try { File.WriteAllText(PlantsFilePath, JsonSerializer.Serialize(snapshot, _jsonOptions)); }
+                catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Pflanzen: {ex.Message}"); }
+            }
         });
     }
 

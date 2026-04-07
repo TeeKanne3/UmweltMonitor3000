@@ -13,6 +13,14 @@ public class MqttService : IMqttService
 
     public async Task ConnectAsync(string brokerAddress, int brokerPort, string clientId, string username, string password)
     {
+        if (_mqttClient != null)
+        {
+            if (_mqttClient.IsConnected)
+                await _mqttClient.DisconnectAsync();
+            _mqttClient.Dispose();
+            _mqttClient = null;
+        }
+
         var factory = new MqttClientFactory();
         _mqttClient = factory.CreateMqttClient();
 
