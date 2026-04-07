@@ -3,8 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using UmweltMonitor3000.Application.Models;
@@ -13,6 +15,9 @@ namespace UmweltMonitor3000.Application.ViewModels;
 
 public partial class MqttViewModel : ObservableObject
 {
+    private const string LogFilePath = "logs.json";
+    private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+
     private readonly MainWindowLogic _logic;
 
     private readonly DispatcherTimer _upTimer = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -52,6 +57,56 @@ public partial class MqttViewModel : ObservableObject
             _elapsed = _elapsed.Add(TimeSpan.FromSeconds(1));
             UpTime = _elapsed.ToString(@"hh\:mm\:ss");
         };
+
+        LoadLogs();
+    }
+
+    private void LoadLogs()
+    {
+        if (!File.Exists(LogFilePath)) return;
+        try
+        {
+            var json = File.ReadAllText(LogFilePath);
+            var state = JsonSerializer.Deserialize<LogState>(json, _jsonOptions);
+            if (state == null) return;
+
+            foreach (var log in state.Logs)
+                LogCollection.Add(log);
+
+            ReceivedMessage = LogCollection.Count(l => l.Direction == "IN" && l.Topic != "-");
+            ErrorCount = state.ErrorCount;
+        }
+        catch { }
+    }
+
+    private void SaveLogs()
+    {
+        var state = new LogState
+        {
+            Logs = LogCollection.ToList(),
+            ErrorCount = ErrorCount
+        };
+        _ = Task.Run(() =>
+        {
+            try { File.WriteAllText(LogFilePath, JsonSerializer.Serialize(state, _jsonOptions)); }
+            catch { }
+        });
+    }
+
+    [RelayCommand]
+    private void ClearLogs()
+    {
+        LogCollection.Clear();
+        ReceivedMessage = 0;
+        ErrorCount = 0;
+        if (File.Exists(LogFilePath))
+            File.Delete(LogFilePath);
+    }
+
+    private record LogState
+    {
+        public List<TopicLog> Logs { get; init; } = new();
+        public int ErrorCount { get; init; }
     }
  
     [RelayCommand]
@@ -98,6 +153,7 @@ public partial class MqttViewModel : ObservableObject
             });
 
             ReceivedMessage = LogCollection.Count(l => l.Direction == "IN" && l.Topic != "-");
+            SaveLogs();
         });
     }
 
@@ -115,6 +171,7 @@ public partial class MqttViewModel : ObservableObject
                 Payload = payload
             });
             ReceivedMessage++;
+            SaveLogs();
         });
     }
 
@@ -123,6 +180,7 @@ public partial class MqttViewModel : ObservableObject
         App.Current.Dispatcher.Invoke(() =>
         {
             ErrorCount++;
+            SaveLogs();
         });
     }
 }

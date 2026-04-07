@@ -264,11 +264,21 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="Logs"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15" />
+                            <Grid>
+                                <TextBlock Text="Logs"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           VerticalAlignment="Center"/>
+                                <Button Content="Clear"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,10,0"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Foreground="#ef5350"
+                                        Command="{Binding ClearLogsCommand}"/>
+                            </Grid>
                             <DataGrid Grid.Row="1"
                                       Style="{StaticResource MaterialDesignDataGrid}"
                                       Background="#141923"
@@ -324,7 +334,7 @@
                                     <DataGridTextColumn Header="Typ"
                                         Binding="{Binding LogTyp}" Width="60" />
                                     <DataGridTextColumn Header="Richtung"
-                                        Binding="{Binding Direction}" Width="70" />
+                                        Binding="{Binding Direction}" Width="90" />
                                     <DataGridTextColumn Header="Topic"
                                         Binding="{Binding Topic}" Width="200" />
                                     <DataGridTextColumn Header="Payload"
