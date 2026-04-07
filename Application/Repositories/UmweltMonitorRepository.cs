@@ -9,6 +9,8 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
 {
     private readonly string _jsonFilePath = $"sensor_data.json";
 
+    public event Action<string>? LogMessage;
+
     private readonly JsonSerializerOptions _options = new()
     {
         WriteIndented = true
@@ -17,6 +19,9 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
     public async Task SaveSensorDataAsync(string sensorId, string data)
     {
         var sensorData = ParseSensorData(sensorId, data);
+
+        if (sensorData == null)
+            return;
 
         var allData = await LoadAllAsync();
 
@@ -57,7 +62,7 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
         await File.WriteAllTextAsync(_jsonFilePath, json);
     }
 
-    private SensorData ParseSensorData(string sensorId, string payload)
+    private SensorData? ParseSensorData(string sensorId, string payload)
     {
         double value = 0;
 
@@ -74,7 +79,8 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
             }
             catch
             {
-                throw new Exception("Error to parse");
+                LogMessage?.Invoke($"Error parsing sensor data for sensor '{sensorId}': {payload}");
+                return null;
             }
         }
 
