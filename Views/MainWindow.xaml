@@ -106,6 +106,7 @@
                                          materialDesign:HintAssist.Background="#212121"
                                          materialDesign:HintAssist.HintPaddingBrush="Transparent"
                                          HorizontalAlignment="Left"
+                                         Text="{Binding IpAdresse}"
                                          Margin="10,0,0,0" />
                                 <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          Height="50"
@@ -114,6 +115,7 @@
                                          materialDesign:HintAssist.Background="#212121"
                                          materialDesign:HintAssist.HintPaddingBrush="Transparent"
                                          HorizontalAlignment="Left"
+                                         Text="{Binding Port}"
                                          Margin="10,0,0,0" />
                             </StackPanel>
 
@@ -127,7 +129,8 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung herstellen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding ConnectCommand}"/>
                             </StackPanel>
 
 
@@ -142,7 +145,8 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung trennen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                        Style="{StaticResource MaterialDesignFlatButton}" 
+                                        Command="{Binding DisconnectCommand}"/>
                             </StackPanel>
                         </Grid>
                     </materialDesign:Card>
@@ -174,12 +178,19 @@
                                        Margin="10,10,0,0"
                                        FontSize="15" />
 
-                            <TextBlock Text="Status:"
+                            <TextBlock Text="Status: "
                                        FontWeight="SemiBold"
                                        FontFamily="Inter"
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="1" />
+                            <TextBlock Text="{Binding Status}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="1" 
+                                       Grid.Column="1"/>
 
                             <TextBlock Text="Up-Time:"
                                        FontWeight="SemiBold"
@@ -187,6 +198,13 @@
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="2" />
+                            <TextBlock Text="{Binding UpTime, FallbackValue='--:--:--'}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="2"
+                                       Grid.Column="1"/>
 
                             <TextBlock Text="Broker:"
                                        FontWeight="SemiBold"
@@ -194,12 +212,27 @@
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="3" />
+                            <TextBlock Text="{Binding Broker}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="3"
+                                       Grid.Column="1"/>
+                            
                             <TextBlock Text="Empfangene Nachrichten:"
                                        FontWeight="SemiBold"
                                        FontFamily="Inter"
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="4" />
+                            <TextBlock Text="{Binding ReceivedMessage}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="4"
+                                       Grid.Column="1"/>
 
                             <TextBlock Text="Fehler:"
                                        FontWeight="SemiBold"
@@ -207,6 +240,13 @@
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="5" />
+                            <TextBlock Text="{Binding ErrorCount}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="5"
+                                       Grid.Column="1"/>
                         </Grid>
                     </materialDesign:Card>
 
@@ -230,14 +270,22 @@
                             <DataGrid Grid.Row="1"
                                       Style="{StaticResource MaterialDesignDataGrid}"
                                       Background="#141923"
-                                      Margin="10,0,10,10">
-
+                                      Margin="10,0,10,10"
+                                      ItemsSource="{Binding LogCollection}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Zeitstempel" />
-                                    <DataGridTextColumn Header="Log-Typ" />
-                                    <DataGridTextColumn Header="Richtung" />
-                                    <DataGridTextColumn Header="Topic" />
-                                    <DataGridTextColumn Header="Text" />
+                                    <DataGridTextColumn Header="Zeitstempel"
+                                        Binding="{Binding TimeStamp}" Width="110" />
+                                    <DataGridTextColumn Header="Typ"
+                                        Binding="{Binding LogTyp}" Width="60" />
+                                    <DataGridTextColumn Header="Richtung"
+                                        Binding="{Binding Direction}" Width="70" />
+                                    <DataGridTextColumn Header="Topic"
+                                        Binding="{Binding Topic}" Width="200" />
+                                    <DataGridTextColumn Header="Payload"
+                                        Binding="{Binding Payload}" Width="*" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>

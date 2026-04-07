@@ -13,6 +13,7 @@ public class MainWindowLogic
     public string Status { get; private set; } = "Disconnected";
 
     public event Action<string>? LogMessage;
+    public event Action<string, string>? MessageLogged;
 
     public MainWindowLogic()
     {
@@ -30,7 +31,8 @@ public class MainWindowLogic
 
         var sensorId = topic.Split('/').Last();
 
-        await _repository.SaveSensorDataAsync(sensorId, payload);
+        await _repository.SaveSensorDataAsync(topic, payload);
+        MessageLogged?.Invoke(topic, payload);
     }
 
     public async Task Connect(string ip, int port)
@@ -38,6 +40,7 @@ public class MainWindowLogic
         try
         {
             await _mqttService.ConnectAsync(ip, port, "client1", "", "");
+            await _mqttService.SubscribeAsync("umweltmonitor/sensor/#"); // Anpassen je nach Bedarf (Topic)
             Status = "Connected";
 
             Log($"Mqtt is connected to {ip}:{port}");

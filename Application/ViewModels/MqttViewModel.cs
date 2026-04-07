@@ -12,19 +12,86 @@ namespace UmweltMonitor3000.Application.ViewModels;
 
 public partial class MqttViewModel : ObservableObject
 {
+    private readonly MainWindowLogic _logic;
+    
     [ObservableProperty]
-    public partial int IpAdresse { get; set; }
+    public string _ipAdresse = "localhost";
     [ObservableProperty]
-    public partial int Port { get; set; }
+    private int _port = 1883;
     [ObservableProperty]
-    public partial ObservableCollection<TopicLog> LogCollection { get; set; }
+    private ObservableCollection<TopicLog> _logCollection = new();
     [ObservableProperty]
-    public partial string Status { get; set; }
+    private string _status = "Getrennt";
     [ObservableProperty]
-    public partial string Broker { get; set; }
+    private string _broker = "-";
     [ObservableProperty]
-    public partial int ReceivedMessage {  get; set; }
+    private int _receivedMessage = 0;
     [ObservableProperty]
-    public partial string ErrorCount { get; set; }
+    private int _errorCount = 0;
+    [ObservableProperty]
+    private bool _isConnected = false;
+    [ObservableProperty]
+    private string _upTime = "--:--:--";
 
+    public MqttViewModel()
+    {
+        _logic = new MainWindowLogic();
+        _logic.LogMessage += OnLogMessage;
+        _logic.MessageLogged += OnMessageLogged;
+    }
+ 
+    [RelayCommand]
+    private async Task ConnectAsync()
+    {
+        await _logic.Connect(IpAdresse, Port);
+ 
+        IsConnected = _logic.Status == "Connected";
+        Status = IsConnected ? "Verbunden" : "Getrennt";
+        Broker = IsConnected ? $"{IpAdresse}:{Port}" : "-";
+    }
+ 
+    [RelayCommand]
+    private async Task DisconnectAsync()
+    {
+        await _logic.Disconnect();
+ 
+        IsConnected = false;
+        Status = "Getrennt";
+        Broker = "-";
+    }
+ 
+    private void OnLogMessage(string message)
+    {
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            LogCollection.Add(new TopicLog
+            {
+                Id = Guid.NewGuid(),
+                TimeStamp = DateOnly.FromDateTime(DateTime.Now),
+                LogTyp = "INFO",
+                Direction = "IN",
+                Topic = "-",
+                Payload = message
+            });
+ 
+            ReceivedMessage = LogCollection.Count(l => l.Direction == "IN" && l.Topic != "-");
+        });
+    }
+
+    private void OnMessageLogged(string topic, string payload)
+    {
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            LogCollection.Add(new TopicLog
+            {
+                Id = Guid.NewGuid(),
+                TimeStamp = DateOnly.FromDateTime(DateTime.Now),
+                LogTyp = "MQTT",
+                Direction = "IN",
+                Topic = topic,
+                Payload = payload
+            });
+            ReceivedMessage++;
+        });
+    }
 }
