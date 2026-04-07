@@ -13,6 +13,8 @@ public class MainWindowLogic
     public string Status { get; private set; } = "Disconnected";
 
     public event Action<string>? LogMessage;
+    public event Action<string>? ErrorLogged;
+    public event Action<string, string>? MessageLogged;
 
     public MainWindowLogic()
     {
@@ -20,6 +22,8 @@ public class MainWindowLogic
         _repository = new UmweltMonitorRepository();
 
         _mqttService.MessageReceived += OnMessageReceived;
+        _mqttService.LogMessage += LogError;
+        _repository.LogMessage += LogError;
     }
 
     private async void OnMessageReceived(string topic, string payload)
@@ -28,7 +32,8 @@ public class MainWindowLogic
 
         var sensorId = topic.Split('/').Last();
 
-        await _repository.SaveSensorDataAsync(sensorId, payload);
+        await _repository.SaveSensorDataAsync(topic, payload);
+        MessageLogged?.Invoke(topic, payload);
     }
 
     public async Task Connect(string ip, int port)
@@ -36,13 +41,14 @@ public class MainWindowLogic
         try
         {
             await _mqttService.ConnectAsync(ip, port, "client1", "", "");
+            await _mqttService.SubscribeAsync("umweltmonitor/sensor/#"); // Anpassen je nach Bedarf (Topic)
             Status = "Connected";
 
             Log($"Mqtt is connected to {ip}:{port}");
         }
-        catch
+        catch (Exception ex)
         {
-            Log($"Error while connecting to {ip}:{port}");
+            LogError($"Error while connecting to {ip}:{port}: {ex.Message}");
         }
     }
 
@@ -54,14 +60,14 @@ public class MainWindowLogic
         Log($"Mqtt is Disconnected!");
     }
 
-    public async Task Subscribe(string topic)
-    {
-        await _mqttService.SubscribeAsync(topic);
-        Log($"Subscribed to topic: {topic}");
-    }
-
     private void Log(string message)
     {
         LogMessage?.Invoke(message);
+    }
+
+    public void LogError(string message)
+    {
+        LogMessage?.Invoke(message);
+        ErrorLogged?.Invoke(message);
     }
 }

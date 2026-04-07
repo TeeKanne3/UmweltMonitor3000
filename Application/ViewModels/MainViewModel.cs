@@ -1,25 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace UmweltMonitor3000.Application.ViewModels;
 
-public partial class MainViewModel :ObservableObject
+public partial class MainViewModel : ObservableObject
 {
-    public ObservableCollection<object> Tabs { get; set; }
+    public MqttViewModel MqttViewModel { get; }
+    public PlantViewModel PlantViewModel { get; }
+    public StatisticViewModel StatisticViewModel { get; } = new();
 
     public MainViewModel()
     {
-        Tabs = new ObservableCollection<object>
-        {
-            new MqttViewModel(),
-            new PlantViewModel(),
-            new StatisticViewModel()
-        };
-        
+        var logic = new MainWindowLogic();
+        MqttViewModel = new MqttViewModel(logic);
+        PlantViewModel = new PlantViewModel(logic);
     }
 }

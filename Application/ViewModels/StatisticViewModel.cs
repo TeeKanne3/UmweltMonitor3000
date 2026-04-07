@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UmweltMonitor3000.Application.ViewModels
 {
-    internal class StatisticViewModel
+    public class StatisticViewModel
     {
     }
 }

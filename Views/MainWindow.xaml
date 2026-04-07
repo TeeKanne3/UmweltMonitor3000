@@ -29,10 +29,8 @@
                        Margin="0,10,0,10" />
             </materialDesign:NavigationRailAssist.FloatingContent>
             <TabItem Height="50"
-                     Width="200">
-                <TabItem.DataContext>
-                    <vm:MqttViewModel />
-                </TabItem.DataContext>
+                     Width="200"
+                     DataContext="{Binding MqttViewModel}">
 
                 <TabItem.Header>
                     <Grid>
@@ -104,16 +102,20 @@
                                          Width="270"
                                          materialDesign:HintAssist.Hint="IP-Adresse"
                                          materialDesign:HintAssist.Background="#212121"
-                                         materialDesign:HintAssist.HintPaddingBrush="Transparent"
+                                         materialDesign:HintAssist.IsFloating="False"
                                          HorizontalAlignment="Left"
+                                         Text="{Binding IpAdresse}"
                                          Margin="10,0,0,0" />
                                 <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          Height="50"
                                          Width="60"
                                          materialDesign:HintAssist.Hint="Port"
                                          materialDesign:HintAssist.Background="#212121"
-                                         materialDesign:HintAssist.HintPaddingBrush="Transparent"
+                                         materialDesign:HintAssist.IsFloating="False"
                                          HorizontalAlignment="Left"
+                                         Text="{Binding Port}"
+                                         PreviewTextInput="PortTextBox_PreviewTextInput"
+                                         DataObject.Pasting="PortTextBox_Pasting"
                                          Margin="10,0,0,0" />
                             </StackPanel>
 
@@ -127,7 +129,9 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung herstellen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding ConnectCommand}"
+                                        IsEnabled="{Binding IsNotConnected}"/>
                             </StackPanel>
 
 
@@ -142,7 +146,9 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung trennen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding DisconnectCommand}"
+                                        IsEnabled="{Binding IsConnected}"/>
                             </StackPanel>
                         </Grid>
                     </materialDesign:Card>
@@ -174,12 +180,19 @@
                                        Margin="10,10,0,0"
                                        FontSize="15" />
 
-                            <TextBlock Text="Status:"
+                            <TextBlock Text="Status: "
                                        FontWeight="SemiBold"
                                        FontFamily="Inter"
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="1" />
+                            <TextBlock Text="{Binding Status}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="1" 
+                                       Grid.Column="1"/>
 
                             <TextBlock Text="Up-Time:"
                                        FontWeight="SemiBold"
@@ -187,6 +200,13 @@
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="2" />
+                            <TextBlock Text="{Binding UpTime, FallbackValue='--:--:--'}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="2"
+                                       Grid.Column="1"/>
 
                             <TextBlock Text="Broker:"
                                        FontWeight="SemiBold"
@@ -194,12 +214,27 @@
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="3" />
+                            <TextBlock Text="{Binding Broker}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="3"
+                                       Grid.Column="1"/>
+                            
                             <TextBlock Text="Empfangene Nachrichten:"
                                        FontWeight="SemiBold"
                                        FontFamily="Inter"
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="4" />
+                            <TextBlock Text="{Binding ReceivedMessage}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="4"
+                                       Grid.Column="1"/>
 
                             <TextBlock Text="Fehler:"
                                        FontWeight="SemiBold"
@@ -207,6 +242,13 @@
                                        Margin="10,10,0,0"
                                        FontSize="15"
                                        Grid.Row="5" />
+                            <TextBlock Text="{Binding ErrorCount}"
+                                       FontWeight="SemiBold"
+                                       FontFamily="Inter"
+                                       Margin="10,10,0,0"
+                                       FontSize="15"
+                                       Grid.Row="5"
+                                       Grid.Column="1"/>
                         </Grid>
                     </materialDesign:Card>
 
@@ -222,22 +264,81 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="Logs"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15" />
+                            <Grid>
+                                <TextBlock Text="Logs"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           VerticalAlignment="Center"/>
+                                <Button Content="Clear"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,10,0"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Foreground="#ef5350"
+                                        Command="{Binding ClearLogsCommand}"/>
+                            </Grid>
                             <DataGrid Grid.Row="1"
                                       Style="{StaticResource MaterialDesignDataGrid}"
                                       Background="#141923"
-                                      Margin="10,0,10,10">
-
+                                      Margin="10,0,10,10"
+                                      ItemsSource="{Binding LogCollection}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      VerticalScrollBarVisibility="Auto">
+                                <DataGrid.Resources>
+                                    <Style TargetType="ScrollBar">
+                                        <Setter Property="Width" Value="6"/>
+                                        <Setter Property="MinWidth" Value="6"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ScrollBar">
+                                                    <Grid Background="Transparent" Width="6">
+                                                        <Border CornerRadius="3"
+                                                                Background="#1e2538"
+                                                                Margin="1,4" />
+                                                        <Track Name="PART_Track"
+                                                               IsDirectionReversed="True">
+                                                            <Track.DecreaseRepeatButton>
+                                                                <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                                              Opacity="0" Height="0"/>
+                                                            </Track.DecreaseRepeatButton>
+                                                            <Track.Thumb>
+                                                                <Thumb>
+                                                                    <Thumb.Template>
+                                                                        <ControlTemplate TargetType="Thumb">
+                                                                            <Border Background="#80CBC4"
+                                                                                    CornerRadius="3"
+                                                                                    Margin="1,0"/>
+                                                                        </ControlTemplate>
+                                                                    </Thumb.Template>
+                                                                </Thumb>
+                                                            </Track.Thumb>
+                                                            <Track.IncreaseRepeatButton>
+                                                                <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                                              Opacity="0" Height="0"/>
+                                                            </Track.IncreaseRepeatButton>
+                                                        </Track>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.Resources>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Zeitstempel" />
-                                    <DataGridTextColumn Header="Log-Typ" />
-                                    <DataGridTextColumn Header="Richtung" />
-                                    <DataGridTextColumn Header="Topic" />
-                                    <DataGridTextColumn Header="Text" />
+                                    <DataGridTextColumn Header="Zeitstempel"
+                                        Binding="{Binding TimeStamp}" Width="110" />
+                                    <DataGridTextColumn Header="Typ"
+                                        Binding="{Binding LogTyp}" Width="60" />
+                                    <DataGridTextColumn Header="Richtung"
+                                        Binding="{Binding Direction}" Width="90" />
+                                    <DataGridTextColumn Header="Topic"
+                                        Binding="{Binding Topic}" Width="200" />
+                                    <DataGridTextColumn Header="Payload"
+                                        Binding="{Binding Payload}" Width="*" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
@@ -246,10 +347,8 @@
             </TabItem>
 
             <TabItem Height="50"
-                     Width="200">
-                <TabItem.DataContext>
-                    <vm:PlantViewModel />
-                </TabItem.DataContext>
+                     Width="200"
+                     DataContext="{Binding PlantViewModel}">
                 <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -279,10 +378,40 @@
                                      materialDesign:ElevationAssist.Elevation="Dp3">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="450" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <DataGrid Margin="10"
+
+                        <StackPanel Margin="10,10,10,5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                         materialDesign:HintAssist.Hint="Pflanzenname"
+                                         materialDesign:HintAssist.Background="#181d29"
+                                         materialDesign:HintAssist.IsFloating="False"
+                                         Width="280"
+                                         Text="{Binding NewPlantName, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Button Content="Hinzufügen"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding AddPlantCommand}"
+                                        Margin="10,0,0,0"/>
+                            </StackPanel>
+                            <TextBlock Foreground="#ef5350"
+                                       FontSize="12"
+                                       Margin="4,2,0,0"
+                                       Text="{Binding NameErrorMessage}">
+                                <TextBlock.Visibility>
+                                    <Binding Path="HasNameError">
+                                        <Binding.Converter>
+                                            <BooleanToVisibilityConverter/>
+                                        </Binding.Converter>
+                                    </Binding>
+                                </TextBlock.Visibility>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <DataGrid Grid.Row="1"
+                                  Margin="10,5,10,5"
                                   ItemsSource="{Binding PlantCollection}"
                                   CanUserAddRows="False"
                                   CanUserDeleteRows="False"
@@ -290,15 +419,55 @@
                                   CanUserSortColumns="False"
                                   HorizontalScrollBarVisibility="Auto"
                                   AutoGenerateColumns="False"
-                                  VerticalAlignment="Top"
-                                  Height="450"
+                                  VerticalScrollBarVisibility="Auto"
                                   RowHeight="40">
 
+                            <DataGrid.Resources>
+                                <Style TargetType="ScrollBar">
+                                    <Setter Property="Width" Value="6"/>
+                                    <Setter Property="MinWidth" Value="6"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ScrollBar">
+                                                <Grid Background="Transparent" Width="6">
+                                                    <Border CornerRadius="3"
+                                                            Background="#1e2538"
+                                                            Margin="1,4" />
+                                                    <Track Name="PART_Track"
+                                                           IsDirectionReversed="True">
+                                                        <Track.DecreaseRepeatButton>
+                                                            <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                                          Opacity="0" Height="0"/>
+                                                        </Track.DecreaseRepeatButton>
+                                                        <Track.Thumb>
+                                                            <Thumb>
+                                                                <Thumb.Template>
+                                                                    <ControlTemplate TargetType="Thumb">
+                                                                        <Border Background="#80CBC4"
+                                                                                CornerRadius="3"
+                                                                                Margin="1,0"/>
+                                                                    </ControlTemplate>
+                                                                </Thumb.Template>
+                                                            </Thumb>
+                                                        </Track.Thumb>
+                                                        <Track.IncreaseRepeatButton>
+                                                            <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                                          Opacity="0" Height="0"/>
+                                                        </Track.IncreaseRepeatButton>
+                                                    </Track>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="PflanzenID"
+                                <DataGridTextColumn Header="ID"
                                                     Binding="{Binding PlantID}"
-                                                    IsReadOnly="True" />
-                                <DataGridTemplateColumn Header="Status">
+                                                    IsReadOnly="True"
+                                                    Width="0.4*" />
+                                <DataGridTemplateColumn Header="Status" Width="0.5*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Border Width="20"
@@ -336,23 +505,47 @@
 
                                 <DataGridTextColumn Header="Bezeichnung"
                                                     Binding="{Binding Name}"
-                                                    IsReadOnly="True" />
-                                <DataGridTextColumn Header="Feuchtigkeit Sensorwert"
+                                                    IsReadOnly="True"
+                                                    Width="*" />
+                                <DataGridTextColumn Header="MQTT Topic"
+                                                    Binding="{Binding MqttTopic}"
+                                                    IsReadOnly="True"
+                                                    Width="1.5*" />
+                                <DataGridTextColumn Header="Sensorwert"
                                                     Binding="{Binding MoistureSensor}"
-                                                    IsReadOnly="True" />
+                                                    IsReadOnly="True"
+                                                    Width="0.8*" />
                                 <DataGridTextColumn Header="Feuchtigkeit %"
                                                     Binding="{Binding MoisturePercent, StringFormat={}{0}%}"
-                                                    IsReadOnly="True" />
+                                                    IsReadOnly="True"
+                                                    Width="0.8*" />
                                 <DataGridTextColumn Header="Letzte Aktualisierung"
                                                     Binding="{Binding LastUpdate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
-                                                    IsReadOnly="True" />
-                                <DataGridTextColumn Header="Batteriewert (optional Backend)"
+                                                    IsReadOnly="True"
+                                                    Width="*" />
+                                <DataGridTextColumn Header="Batterie"
                                                     Binding="{Binding BatteryState, StringFormat={}{0}%}"
-                                                    IsReadOnly="True" />
+                                                    IsReadOnly="True"
+                                                    Width="0.6*" />
+                                <DataGridTemplateColumn Header="" Width="50">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                                    Foreground="#ef5350"
+                                                    Padding="0"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding DataContext.RemovePlantCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"
+                                                                         VerticalAlignment="Center"/>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <Grid Grid.Row="1"
+                        <Grid Grid.Row="2"
                               Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -883,10 +1076,8 @@
 
 
             <TabItem Height="50"
-                     Width="200">
-                <TabItem.DataContext>
-                    <vm:StatisticViewModel />
-                </TabItem.DataContext>
+                     Width="200"
+                     DataContext="{Binding StatisticViewModel}">
                 <TabItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>

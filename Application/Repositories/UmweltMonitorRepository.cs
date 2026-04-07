@@ -9,18 +9,28 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
 {
     private readonly string _jsonFilePath = $"sensor_data.json";
 
+    public event Action<string>? LogMessage;
+
     private readonly JsonSerializerOptions _options = new()
     {
         WriteIndented = true
     };
 
+    private const int MaxSensorEntries = 1000;
+
     public async Task SaveSensorDataAsync(string sensorId, string data)
     {
         var sensorData = ParseSensorData(sensorId, data);
 
+        if (sensorData == null)
+            return;
+
         var allData = await LoadAllAsync();
 
         allData.Add(sensorData);
+
+        if (allData.Count > MaxSensorEntries)
+            allData = allData.Skip(allData.Count - MaxSensorEntries).ToList();
 
         await SaveAllAsync(allData);
     }
@@ -57,13 +67,18 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
         await File.WriteAllTextAsync(_jsonFilePath, json);
     }
 
-    private SensorData ParseSensorData(string sensorId, string payload)
+    private SensorData? ParseSensorData(string sensorId, string payload)
     {
         double value = 0;
 
-        if (double.TryParse(payload, out var parsedValue))
+        if (double.TryParse(payload.Trim(), System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var parsedValue))
         {
             value = parsedValue;
+        }
+        else if (TryParseCsvFirstValue(payload, out var csvValue))
+        {
+            value = csvValue;
         }
         else
         {
@@ -72,9 +87,10 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
                 var doc = JsonDocument.Parse(payload);
                 value = doc.RootElement.GetProperty("value").GetDouble();
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception("Error to parse");
+                LogMessage?.Invoke($"Error parsing sensor data for sensor '{sensorId}': {ex.Message} (Payload: {payload})");
+                return null;
             }
         }
 
@@ -85,5 +101,16 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
             Value = value,
             TimeStamp = DateTime.UtcNow,
         };
+    }
+
+    private static bool TryParseCsvFirstValue(string payload, out double result)
+    {
+        result = 0;
+        var parts = payload.Split(',');
+        if (parts.Length < 2) return false;
+        return double.TryParse(parts[0].Trim().TrimEnd('%'),
+            System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out result);
     }
 }
