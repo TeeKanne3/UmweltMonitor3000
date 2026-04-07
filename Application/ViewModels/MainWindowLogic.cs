@@ -13,6 +13,7 @@ public class MainWindowLogic
     public string Status { get; private set; } = "Disconnected";
 
     public event Action<string>? LogMessage;
+    public event Action<string>? ErrorLogged;
     public event Action<string, string>? MessageLogged;
 
     public MainWindowLogic()
@@ -21,8 +22,8 @@ public class MainWindowLogic
         _repository = new UmweltMonitorRepository();
 
         _mqttService.MessageReceived += OnMessageReceived;
-        _mqttService.LogMessage += Log;
-        _repository.LogMessage += Log;
+        _mqttService.LogMessage += LogError;
+        _repository.LogMessage += LogError;
     }
 
     private async void OnMessageReceived(string topic, string payload)
@@ -47,7 +48,7 @@ public class MainWindowLogic
         }
         catch
         {
-            Log($"Error while connecting to {ip}:{port}");
+            LogError($"Error while connecting to {ip}:{port}");
         }
     }
 
@@ -68,5 +69,11 @@ public class MainWindowLogic
     private void Log(string message)
     {
         LogMessage?.Invoke(message);
+    }
+
+    private void LogError(string message)
+    {
+        LogMessage?.Invoke(message);
+        ErrorLogged?.Invoke(message);
     }
 }

@@ -41,6 +41,7 @@ public partial class MqttViewModel : ObservableObject
     {
         _logic = new MainWindowLogic();
         _logic.LogMessage += OnLogMessage;
+        _logic.ErrorLogged += OnErrorLogged;
         _logic.MessageLogged += OnMessageLogged;
 
         _upTimer.Tick += (_, _) =>
@@ -111,6 +112,14 @@ public partial class MqttViewModel : ObservableObject
                 Payload = payload
             });
             ReceivedMessage++;
+        });
+    }
+
+    private void OnErrorLogged(string message)
+    {
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            ErrorCount++;
         });
     }
 }
