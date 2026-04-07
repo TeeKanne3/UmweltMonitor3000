@@ -20,6 +20,8 @@ public class MainWindowLogic
         _repository = new UmweltMonitorRepository();
 
         _mqttService.MessageReceived += OnMessageReceived;
+        _mqttService.LogMessage += Log;
+        _repository.LogMessage += Log;
     }
 
     private async void OnMessageReceived(string topic, string payload)

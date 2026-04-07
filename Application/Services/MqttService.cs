@@ -9,6 +9,7 @@ public class MqttService : IMqttService
     private IMqttClient? _mqttClient;
 
     public event Action<string, string>? MessageReceived;
+    public event Action<string>? LogMessage;
 
     public async Task ConnectAsync(string brokerAddress, int brokerPort, string clientId, string username, string password)
     {
@@ -45,7 +46,10 @@ public class MqttService : IMqttService
     public async Task PublishAsync(string topic, string payload)
     {
         if (_mqttClient == null || !_mqttClient.IsConnected)
-            throw new InvalidOperationException("MQTT client is not connected.");
+        {
+            LogMessage?.Invoke("MQTT client is not connected.");
+            return;
+        }
 
         var message = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
@@ -58,7 +62,10 @@ public class MqttService : IMqttService
     public async Task SubscribeAsync(string topic)
     {
         if (_mqttClient == null || !_mqttClient.IsConnected)
-            throw new InvalidOperationException("MQTT client is not connected.");
+        {
+            LogMessage?.Invoke("MQTT client is not connected.");
+            return;
+        }
 
         await _mqttClient.SubscribeAsync(topic);
     }
