@@ -130,7 +130,8 @@
 
                                 <Button Content="Verbindung herstellen!"
                                         Style="{StaticResource MaterialDesignFlatButton}"
-                                        Command="{Binding ConnectCommand}"/>
+                                        Command="{Binding ConnectCommand}"
+                                        IsEnabled="{Binding IsNotConnected}"/>
                             </StackPanel>
 
 
@@ -145,8 +146,9 @@
                                                          Margin="0,35,5,0" />
 
                                 <Button Content="Verbindung trennen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}" 
-                                        Command="{Binding DisconnectCommand}"/>
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding DisconnectCommand}"
+                                        IsEnabled="{Binding IsConnected}"/>
                             </StackPanel>
                         </Grid>
                     </materialDesign:Card>
@@ -274,7 +276,48 @@
                                       ItemsSource="{Binding LogCollection}"
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="False"
-                                      IsReadOnly="True">
+                                      IsReadOnly="True"
+                                      VerticalScrollBarVisibility="Auto">
+                                <DataGrid.Resources>
+                                    <Style TargetType="ScrollBar">
+                                        <Setter Property="Width" Value="6"/>
+                                        <Setter Property="MinWidth" Value="6"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ScrollBar">
+                                                    <Grid Background="Transparent" Width="6">
+                                                        <Border CornerRadius="3"
+                                                                Background="#1e2538"
+                                                                Margin="1,4" />
+                                                        <Track Name="PART_Track"
+                                                               IsDirectionReversed="True">
+                                                            <Track.DecreaseRepeatButton>
+                                                                <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                                              Opacity="0" Height="0"/>
+                                                            </Track.DecreaseRepeatButton>
+                                                            <Track.Thumb>
+                                                                <Thumb>
+                                                                    <Thumb.Template>
+                                                                        <ControlTemplate TargetType="Thumb">
+                                                                            <Border Background="#80CBC4"
+                                                                                    CornerRadius="3"
+                                                                                    Margin="1,0"/>
+                                                                        </ControlTemplate>
+                                                                    </Thumb.Template>
+                                                                </Thumb>
+                                                            </Track.Thumb>
+                                                            <Track.IncreaseRepeatButton>
+                                                                <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                                              Opacity="0" Height="0"/>
+                                                            </Track.IncreaseRepeatButton>
+                                                        </Track>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.Resources>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Zeitstempel"
                                         Binding="{Binding TimeStamp}" Width="110" />

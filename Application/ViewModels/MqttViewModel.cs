@@ -33,7 +33,10 @@ public partial class MqttViewModel : ObservableObject
     [ObservableProperty]
     private int _errorCount = 0;
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotConnected))]
     private bool _isConnected = false;
+
+    public bool IsNotConnected => !IsConnected;
     [ObservableProperty]
     private string _upTime = "--:--:--";
 
@@ -84,7 +87,7 @@ public partial class MqttViewModel : ObservableObject
     {
         App.Current.Dispatcher.Invoke(() =>
         {
-            LogCollection.Add(new TopicLog
+            LogCollection.Insert(0, new TopicLog
             {
                 Id = Guid.NewGuid(),
                 TimeStamp = DateOnly.FromDateTime(DateTime.Now),
@@ -93,7 +96,7 @@ public partial class MqttViewModel : ObservableObject
                 Topic = "-",
                 Payload = message
             });
- 
+
             ReceivedMessage = LogCollection.Count(l => l.Direction == "IN" && l.Topic != "-");
         });
     }
@@ -102,7 +105,7 @@ public partial class MqttViewModel : ObservableObject
     {
         App.Current.Dispatcher.Invoke(() =>
         {
-            LogCollection.Add(new TopicLog
+            LogCollection.Insert(0, new TopicLog
             {
                 Id = Guid.NewGuid(),
                 TimeStamp = DateOnly.FromDateTime(DateTime.Now),
