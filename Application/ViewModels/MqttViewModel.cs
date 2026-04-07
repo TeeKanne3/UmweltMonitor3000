@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using UmweltMonitor3000.Application.Models;
 
 namespace UmweltMonitor3000.Application.ViewModels;
@@ -13,7 +14,10 @@ namespace UmweltMonitor3000.Application.ViewModels;
 public partial class MqttViewModel : ObservableObject
 {
     private readonly MainWindowLogic _logic;
-    
+
+    private readonly DispatcherTimer _upTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private TimeSpan _elapsed = TimeSpan.Zero;
+
     [ObservableProperty]
     public string _ipAdresse = "localhost";
     [ObservableProperty]
@@ -48,6 +52,10 @@ public partial class MqttViewModel : ObservableObject
         IsConnected = _logic.Status == "Connected";
         Status = IsConnected ? "Verbunden" : "Getrennt";
         Broker = IsConnected ? $"{IpAdresse}:{Port}" : "-";
+
+        _elapsed = TimeSpan.Zero;
+        UpTime = "00:00:00";
+        _upTimer.Start();
     }
  
     [RelayCommand]
@@ -58,6 +66,8 @@ public partial class MqttViewModel : ObservableObject
         IsConnected = false;
         Status = "Getrennt";
         Broker = "-";
+
+        _upTimer.Stop();
     }
  
     private void OnLogMessage(string message)
