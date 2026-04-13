@@ -1,22 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MaterialDesignThemes.Wpf;
-using System.Drawing;
-using System.Windows.Media;
 
 namespace UmweltMonitor3000.Application.Models;
 
 public partial class Plant : ObservableObject
 {
     [ObservableProperty]
-    public partial int PlantID { get; set; }
+    private int _plantID;
     [ObservableProperty]
-    public partial string Name { get; set; }
+    [NotifyPropertyChangedFor(nameof(MqttTopic))]
+    private string _name = string.Empty;
+
+    public string MqttTopic => $"umweltmonitor/sensor/{Name}";
     [ObservableProperty]
-    public partial int MoistureSensor { get; set; }
+    private int _moistureSensor;
     [ObservableProperty]
-    public partial int MoisturePercent { get; set; }
+    private int _moisturePercent;
     [ObservableProperty]
-    public partial DateTime LastUpdate { get; set; }
+    private DateTime _lastUpdate;
     [ObservableProperty]
-    public partial int BatteryState { get; set; }
+    private int _batteryState;
 }

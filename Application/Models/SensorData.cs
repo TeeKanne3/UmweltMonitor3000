@@ -1,4 +1,6 @@
-﻿namespace UmweltMonitor3000.Application.Models;
+﻿using System;
+
+namespace UmweltMonitor3000.Application.Models;
 
 public class SensorData
 {
