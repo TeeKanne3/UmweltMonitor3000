@@ -85,7 +85,7 @@
                                              materialDesign:ElevationAssist.Elevation="Dp3"
                                              Margin="10,0,10,10"
                                              Grid.Row="1"
-                                             UniformCornerRadius="20">
+                                             >
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40" />
@@ -166,7 +166,6 @@
 
                         <materialDesign:Card Background="#212121"
                                              Margin="0,0,10,10"
-                                             UniformCornerRadius="20"
                                              Grid.Column="1"
                                              materialDesign:ElevationAssist.Elevation="Dp3"
                                              Grid.Row="1">
@@ -197,13 +196,14 @@
                                            Margin="10,10,0,0"
                                            FontSize="15"
                                            Grid.Row="1" />
-                                <TextBlock Text="{Binding Status}"
-                                           FontWeight="SemiBold"
-                                           FontFamily="Inter"
-                                           Margin="10,10,0,0"
-                                           FontSize="15"
-                                           Grid.Row="1"
-                                           Grid.Column="1" />
+                                <materialDesign:PackIcon Margin="10,10,0,0"
+                                                         Grid.Row="1"
+                                                         Grid.Column="1"
+                                                         Kind="{Binding IsConnected, Converter={StaticResource BoolToIconConverter}}"
+                                                         Foreground="Red"
+                                                         Height=" 24"
+                                                         Width="24">
+                                </materialDesign:PackIcon>
 
                                 <TextBlock Text="Up-Time:"
                                            FontWeight="SemiBold"
@@ -211,6 +211,7 @@
                                            Margin="10,10,0,0"
                                            FontSize="15"
                                            Grid.Row="2" />
+                                
                                 <TextBlock Text="{Binding UpTime, FallbackValue='--:--:--'}"
                                            FontWeight="SemiBold"
                                            FontFamily="Inter"
@@ -267,7 +268,6 @@
                                              Margin="10,0,10,10"
                                              materialDesign:ElevationAssist.Elevation="Dp3"
                                              Grid.Row="2"
-                                             UniformCornerRadius="20"
                                              Grid.ColumnSpan="2">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -350,7 +350,7 @@
                                     </DataGrid.Resources>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Zeitstempel"
-                                                            Binding="{Binding TimeStamp}"
+                                                            Binding="{Binding TimeStamp, StringFormat={}{0:dd.MM.yyyy}}"
                                                             Width="110" />
                                         <DataGridTextColumn Header="Typ"
                                                             Binding="{Binding LogTyp}"

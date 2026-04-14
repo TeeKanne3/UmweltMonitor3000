@@ -32,8 +32,6 @@ public partial class MqttViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<TopicLog> _logCollection = new();
     [ObservableProperty]
-    private string _status = "Getrennt";
-    [ObservableProperty]
     private string _broker = "-";
     [ObservableProperty]
     private int _receivedMessage = 0;
@@ -113,7 +111,7 @@ public partial class MqttViewModel : ObservableObject
 
     private record LogState
     {
-        public List<TopicLog> Logs { get; init; } = new();
+        public List<TopicLog> Logs { get; init; } = [];
         public int ErrorCount { get; init; }
     }
  
@@ -123,7 +121,6 @@ public partial class MqttViewModel : ObservableObject
         await _logic.Connect(IpAdresse, Port);
  
         IsConnected = _logic.Status == "Connected";
-        Status = IsConnected ? "Verbunden" : "Getrennt";
         Broker = IsConnected ? $"{IpAdresse}:{Port}" : "-";
 
         if (IsConnected)
@@ -140,7 +137,6 @@ public partial class MqttViewModel : ObservableObject
         await _logic.Disconnect();
  
         IsConnected = false;
-        Status = "Getrennt";
         Broker = "-";
 
         _upTimer.Stop();

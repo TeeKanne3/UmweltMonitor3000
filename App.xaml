@@ -4,7 +4,6 @@
              xmlns:local="clr-namespace:UmweltMonitor3000"
              xmlns:Converter="clr-namespace:UmweltMonitor3000.Views.Converter"
              StartupUri="Views/MainWindow.xaml"
-             
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Application.Resources>
         <ResourceDictionary>
@@ -15,6 +14,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Converter:ValueToRangeConverter x:Key="ValueToRangeConverter" />
+            <Converter:BoolToIconConverter x:Key="BoolToIconConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
