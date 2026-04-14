@@ -6,11 +6,13 @@
         xmlns:local="clr-namespace:UmweltMonitor3000"
         xmlns:Models="clr-namespace:UmweltMonitor3000.Application.Models"
         xmlns:vm="clr-namespace:UmweltMonitor3000.Application.ViewModels"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+        xmlns:v2="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         Title="UmweltMonitor3000"
         WindowStyle="SingleBorderWindow"
-        d:DataContext=""
         Height="700"
         MinHeight="700"
         DataContext="MainViewModel"
@@ -18,7 +20,7 @@
         Icon="/Assets/Icon/AppIcon.ico">
     <Grid>
         <TabControl TabStripPlacement="Left"
-                    Background="#1a2035"
+                    Background="#FF282828"
                     Style="{StaticResource MaterialDesignNavigationRailTabControl}"
                     materialDesign:ColorZoneAssist.Mode="Standard"
                     materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
@@ -105,7 +107,6 @@
                                          materialDesign:HintAssist.Background="#212121"
                                          materialDesign:HintAssist.IsFloating="False"
                                          HorizontalAlignment="Left"
-                                         Text="{Binding IpAdresse}"
                                          Margin="10,0,0,0" />
                                 <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          Height="50"
@@ -115,8 +116,6 @@
                                          materialDesign:HintAssist.Background="#212121"
                                          materialDesign:HintAssist.IsFloating="False"
                                          HorizontalAlignment="Left"
-                                         Text="{Binding Port}"
-                                         PreviewTextInput="PortTextBox_PreviewTextInput"
                                          DataObject.Pasting="PortTextBox_Pasting"
                                          Margin="10,0,0,0" />
                             </StackPanel>
@@ -1110,9 +1109,85 @@
 
                 </TabItem.Header>
 
-                <materialDesign:Card Background="#181d29"
+                <materialDesign:Card Background="#2d2d2d"
                                      Margin="10"
                                      materialDesign:ElevationAssist.Elevation="Dp3">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <materialDesign:Card Grid.ColumnSpan="2"
+                                             Margin="10"
+                                             Background="#212121">
+                            <Grid Background="#212121">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <!--<lvc:CartesianChart Series="{Binding MySeries}"
+                                                    XAxes="{Binding XAxes}"
+                                                    YAxes="{Binding YAxes}"
+                                                    LegendPosition="Right"
+                                                    HorizontalAlignment="Stretch"
+                                                    Height="300"/>-->
+
+                                <lvc:CartesianChart Series="{Binding PlantSeries}" 
+                                                    Height="300"
+                                                    HorizontalAlignment="Stretch"/>
+
+
+
+                            </Grid>
+                        </materialDesign:Card>
+
+
+                        <materialDesign:Card Grid.Row="1"
+                                             Background="#212121"
+                                             Margin="10,0,10,10"/>
+                        <materialDesign:Card Grid.Row="1"
+                                             Grid.Column="1"
+                                             Background="#212121"
+                                             Margin="0,0,10,10"/>
+
+                        <materialDesign:Card Grid.RowSpan="2"
+                                             Grid.Column="2"
+                                             Background="#212121"
+                                             Margin="0,10,10,10">
+
+                            <Grid ShowGridLines="True">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Center">
+                                    
+                                <TextBlock Text="Pflanze auswählen:" 
+                                           FontSize="14"
+                                           VerticalAlignment="Center"/>
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,0,0"
+                                              Height="40"
+                                              Width="200"/>
+
+            
+                                </StackPanel>
+
+
+                            </Grid>
+                        </materialDesign:Card>
+                    </Grid>
 
                 </materialDesign:Card>
             </TabItem>
