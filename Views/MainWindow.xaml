@@ -6,11 +6,13 @@
         xmlns:local="clr-namespace:UmweltMonitor3000"
         xmlns:Models="clr-namespace:UmweltMonitor3000.Application.Models"
         xmlns:vm="clr-namespace:UmweltMonitor3000.Application.ViewModels"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+        xmlns:v2="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         Title="UmweltMonitor3000"
         WindowStyle="SingleBorderWindow"
-        d:DataContext=""
         Height="700"
         MinHeight="700"
         DataContext="MainViewModel"
@@ -18,7 +20,7 @@
         Icon="/Assets/Icon/AppIcon.ico">
     <Grid>
         <TabControl TabStripPlacement="Left"
-                    Background="#1a2035"
+                    Background="#FF282828"
                     Style="{StaticResource MaterialDesignNavigationRailTabControl}"
                     materialDesign:ColorZoneAssist.Mode="Standard"
                     materialDesign:NavigationRailAssist.ShowSelectionBackground="True">
@@ -55,295 +57,320 @@
                     </Grid>
 
                 </TabItem.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <materialDesign:Card Margin="10"
+                                     Background="#2d2d2d"
+                                     materialDesign:ElevationAssist.Elevation="Dp3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="MQTT-Dashboard"
-                               FontFamily="Inter"
-                               FontSize="20"
-                               VerticalAlignment="Center"
-                               Margin="10,0,0,0"
-                               FontWeight="SemiBold" />
-
-                    <materialDesign:Card Background="#181d29"
-                                         materialDesign:ElevationAssist.Elevation="Dp3"
-                                         Margin="10,0,10,10"
-                                         Grid.Row="1"
-                                         UniformCornerRadius="20">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40" />
-                                <RowDefinition Height="70" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
 
+                        <TextBlock Text="MQTT-Dashboard"
+                                   FontFamily="Inter"
+                                   FontSize="20"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"
+                                   FontWeight="SemiBold" />
 
-                            <TextBlock Text="Verbinden"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15" />
-
-                            <StackPanel Orientation="Horizontal"
-                                        Grid.Row="1">
-                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                         Height="50"
-                                         Width="270"
-                                         materialDesign:HintAssist.Hint="IP-Adresse"
-                                         materialDesign:HintAssist.Background="#212121"
-                                         materialDesign:HintAssist.IsFloating="False"
-                                         HorizontalAlignment="Left"
-                                         Text="{Binding IpAdresse}"
-                                         Margin="10,0,0,0" />
-                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                         Height="50"
-                                         Width="60"
-                                         materialDesign:HintAssist.Hint="Port"
-                                         materialDesign:HintAssist.Background="#212121"
-                                         materialDesign:HintAssist.IsFloating="False"
-                                         HorizontalAlignment="Left"
-                                         Text="{Binding Port}"
-                                         PreviewTextInput="PortTextBox_PreviewTextInput"
-                                         DataObject.Pasting="PortTextBox_Pasting"
-                                         Margin="10,0,0,0" />
-                            </StackPanel>
-
-                            <StackPanel Grid.Row="2"
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Left"
-                                        Margin="10,0,0,0">
-                                <materialDesign:PackIcon Kind="ConnectWithoutContact"
-                                                         Height="24"
-                                                         Width="24"
-                                                         Margin="0,35,5,0" />
-
-                                <Button Content="Verbindung herstellen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Command="{Binding ConnectCommand}"
-                                        IsEnabled="{Binding IsNotConnected}"/>
-                            </StackPanel>
-
-
-
-                            <StackPanel Grid.Row="3"
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Left"
-                                        Margin="10,0,0,0">
-                                <materialDesign:PackIcon Kind="LocalAreaNetworkDisconnect"
-                                                         Height="24"
-                                                         Width="24"
-                                                         Margin="0,35,5,0" />
-
-                                <Button Content="Verbindung trennen!"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Command="{Binding DisconnectCommand}"
-                                        IsEnabled="{Binding IsConnected}"/>
-                            </StackPanel>
-                        </Grid>
-                    </materialDesign:Card>
-
-                    <materialDesign:Card Background="#181d29"
-                                         Margin="0,0,10,10"
-                                         UniformCornerRadius="20"
-                                         Grid.Column="1"
-                                         materialDesign:ElevationAssist.Elevation="Dp3"
-                                         Grid.Row="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="MQTT Verbindungsstatus"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15" />
-
-                            <TextBlock Text="Status: "
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="1" />
-                            <TextBlock Text="{Binding Status}"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="1" 
-                                       Grid.Column="1"/>
-
-                            <TextBlock Text="Up-Time:"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="2" />
-                            <TextBlock Text="{Binding UpTime, FallbackValue='--:--:--'}"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="2"
-                                       Grid.Column="1"/>
-
-                            <TextBlock Text="Broker:"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="3" />
-                            <TextBlock Text="{Binding Broker}"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="3"
-                                       Grid.Column="1"/>
-                            
-                            <TextBlock Text="Empfangene Nachrichten:"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="4" />
-                            <TextBlock Text="{Binding ReceivedMessage}"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="4"
-                                       Grid.Column="1"/>
-
-                            <TextBlock Text="Fehler:"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="5" />
-                            <TextBlock Text="{Binding ErrorCount}"
-                                       FontWeight="SemiBold"
-                                       FontFamily="Inter"
-                                       Margin="10,10,0,0"
-                                       FontSize="15"
-                                       Grid.Row="5"
-                                       Grid.Column="1"/>
-                        </Grid>
-                    </materialDesign:Card>
-
-                    <materialDesign:Card Background="#181d29"
-                                         Margin="10,0,10,10"
-                                         materialDesign:ElevationAssist.Elevation="Dp3"
-                                         Grid.Row="2"
-                                         UniformCornerRadius="20"
-                                         Grid.ColumnSpan="2">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
+                        <materialDesign:Card Background="#212121"
+                                             materialDesign:ElevationAssist.Elevation="Dp3"
+                                             Margin="10,0,10,10"
+                                             Grid.Row="1"
+                                             >
                             <Grid>
-                                <TextBlock Text="Logs"
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition Height="70" />
+                                    <RowDefinition Height="70" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+
+
+                                <TextBlock Text="Verbinden"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15" />
+
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="1">
+                                    <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                             Height="50"
+                                             Text="{Binding IpAdresse}"
+                                             Width="270"
+                                             materialDesign:HintAssist.HintPaddingBrush="#212121"
+                                             materialDesign:HintAssist.Hint="IP-Adresse"
+                                             materialDesign:HintAssist.Background="#212121"
+                                             HorizontalAlignment="Left"
+                                             Margin="10,0,0,0" />
+                                    <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                             Height="50"
+                                             Width="60"
+                                             Text="{Binding Port}"
+                                             materialDesign:HintAssist.HintPaddingBrush="#212121"
+                                             materialDesign:HintAssist.Hint="Port"
+                                             materialDesign:HintAssist.Background="#212121"
+                                             HorizontalAlignment="Left"
+                                             DataObject.Pasting="PortTextBox_Pasting"
+                                             Margin="10,0,0,0" />
+                                </StackPanel>
+
+
+
+                                <StackPanel Grid.Row="2"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Left"
+                                            Margin="10,0,0,0">
+                                    <materialDesign:PackIcon Kind="ConnectWithoutContact"
+                                                             Height="24"
+                                                             VerticalAlignment="Center"
+                                                             Width="24"
+                                                             Margin="0,0,5,0" />
+
+                                    <Button Content="Verbindung herstellen!"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Command="{Binding ConnectCommand}"
+                                            IsEnabled="{Binding IsNotConnected}" />
+                                </StackPanel>
+
+
+
+                                <StackPanel Grid.Row="3"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Left"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Top">
+                                    <materialDesign:PackIcon Kind="LocalAreaNetworkDisconnect"
+                                                             Height="24"
+                                                             VerticalAlignment="Center"
+                                                             Width="24"
+                                                             Margin="0,5,5,0" />
+
+                                    <Button Content="Verbindung trennen!"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Command="{Binding DisconnectCommand}"
+                                            IsEnabled="{Binding IsConnected}" />
+                                </StackPanel>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Background="#212121"
+                                             Margin="0,0,10,10"
+                                             Grid.Column="1"
+                                             materialDesign:ElevationAssist.Elevation="Dp3"
+                                             Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="MQTT Verbindungsstatus"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15" />
+
+                                <TextBlock Text="Status: "
                                            FontWeight="SemiBold"
                                            FontFamily="Inter"
                                            Margin="10,10,0,0"
                                            FontSize="15"
-                                           VerticalAlignment="Center"/>
-                                <Button Content="Clear"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Margin="0,0,10,0"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Foreground="#ef5350"
-                                        Command="{Binding ClearLogsCommand}"/>
+                                           Grid.Row="1" />
+                                <materialDesign:PackIcon Margin="10,10,0,0"
+                                                         Grid.Row="1"
+                                                         Grid.Column="1"
+                                                         Kind="{Binding IsConnected, Converter={StaticResource BoolToIconConverter}}"
+                                                         Foreground="{Binding IsConnected, Converter={StaticResource BoolToColor}}"
+                                                         Height=" 24"
+                                                         Width="24">
+                                </materialDesign:PackIcon>
+
+                                <TextBlock Text="Up-Time:"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="2" />
+                                
+                                <TextBlock Text="{Binding UpTime, FallbackValue='--:--:--'}"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="2"
+                                           Grid.Column="1" />
+
+                                <TextBlock Text="Broker:"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="3" />
+                                <TextBlock Text="{Binding Broker}"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="3"
+                                           Grid.Column="1" />
+
+                                <TextBlock Text="Empfangene Nachrichten:"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="4" />
+                                <TextBlock Text="{Binding ReceivedMessage}"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="4"
+                                           Grid.Column="1" />
+
+                                <TextBlock Text="Fehler:"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="5" />
+                                <TextBlock Text="{Binding ErrorCount}"
+                                           FontWeight="SemiBold"
+                                           FontFamily="Inter"
+                                           Margin="10,10,0,0"
+                                           FontSize="15"
+                                           Grid.Row="5"
+                                           Grid.Column="1" />
                             </Grid>
-                            <DataGrid Grid.Row="1"
-                                      Style="{StaticResource MaterialDesignDataGrid}"
-                                      Background="#141923"
-                                      Margin="10,0,10,10"
-                                      ItemsSource="{Binding LogCollection}"
-                                      AutoGenerateColumns="False"
-                                      CanUserAddRows="False"
-                                      IsReadOnly="True"
-                                      VerticalScrollBarVisibility="Auto">
-                                <DataGrid.Resources>
-                                    <Style TargetType="ScrollBar">
-                                        <Setter Property="Width" Value="6"/>
-                                        <Setter Property="MinWidth" Value="6"/>
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="ScrollBar">
-                                                    <Grid Background="Transparent" Width="6">
-                                                        <Border CornerRadius="3"
-                                                                Background="#1e2538"
-                                                                Margin="1,4" />
-                                                        <Track Name="PART_Track"
-                                                               IsDirectionReversed="True">
-                                                            <Track.DecreaseRepeatButton>
-                                                                <RepeatButton Command="ScrollBar.PageUpCommand"
-                                                                              Opacity="0" Height="0"/>
-                                                            </Track.DecreaseRepeatButton>
-                                                            <Track.Thumb>
-                                                                <Thumb>
-                                                                    <Thumb.Template>
-                                                                        <ControlTemplate TargetType="Thumb">
-                                                                            <Border Background="#80CBC4"
-                                                                                    CornerRadius="3"
-                                                                                    Margin="1,0"/>
-                                                                        </ControlTemplate>
-                                                                    </Thumb.Template>
-                                                                </Thumb>
-                                                            </Track.Thumb>
-                                                            <Track.IncreaseRepeatButton>
-                                                                <RepeatButton Command="ScrollBar.PageDownCommand"
-                                                                              Opacity="0" Height="0"/>
-                                                            </Track.IncreaseRepeatButton>
-                                                        </Track>
-                                                    </Grid>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </DataGrid.Resources>
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Zeitstempel"
-                                        Binding="{Binding TimeStamp}" Width="110" />
-                                    <DataGridTextColumn Header="Typ"
-                                        Binding="{Binding LogTyp}" Width="60" />
-                                    <DataGridTextColumn Header="Richtung"
-                                        Binding="{Binding Direction}" Width="90" />
-                                    <DataGridTextColumn Header="Topic"
-                                        Binding="{Binding Topic}" Width="200" />
-                                    <DataGridTextColumn Header="Payload"
-                                        Binding="{Binding Payload}" Width="*" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </Grid>
-                    </materialDesign:Card>
-                </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Background="#212121"
+                                             Margin="10,0,10,10"
+                                             materialDesign:ElevationAssist.Elevation="Dp3"
+                                             Grid.Row="2"
+                                             Grid.ColumnSpan="2">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid>
+                                    <TextBlock Text="Logs"
+                                               FontWeight="SemiBold"
+                                               FontFamily="Inter"
+                                               Margin="10,10,0,0"
+                                               FontSize="15"
+                                               VerticalAlignment="Center" />
+                                    <Button Content="Clear"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,10,0"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Foreground="#ef5350"
+                                            Command="{Binding ClearLogsCommand}" />
+                                </Grid>
+                                <DataGrid Grid.Row="1"
+                                          Style="{StaticResource MaterialDesignDataGrid}"
+                                          Background="#212121"
+                                          Margin="10,0,10,10"
+                                          ItemsSource="{Binding LogCollection}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          CanUserReorderColumns="False"
+                                          CanUserAddRows="False"
+                                          CanUserResizeColumns="False"
+                                          CanUserSortColumns="False"
+                                          VerticalScrollBarVisibility="Auto">
+                                    <DataGrid.Resources>
+                                        <Style TargetType="ScrollBar">
+                                            <Setter Property="Width"
+                                                    Value="6" />
+                                            <Setter Property="MinWidth"
+                                                    Value="6" />
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ScrollBar">
+                                                        <Grid Background="Transparent"
+                                                              Width="6">
+                                                            <Border CornerRadius="3"
+                                                                    Background="#1e2538"
+                                                                    Margin="1,4" />
+                                                            <Track Name="PART_Track"
+                                                                   IsDirectionReversed="True">
+                                                                <Track.DecreaseRepeatButton>
+                                                                    <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                                                  Opacity="0"
+                                                                                  Height="0" />
+                                                                </Track.DecreaseRepeatButton>
+                                                                <Track.Thumb>
+                                                                    <Thumb>
+                                                                        <Thumb.Template>
+                                                                            <ControlTemplate TargetType="Thumb">
+                                                                                <Border Background="#80CBC4"
+                                                                                        CornerRadius="3"
+                                                                                        Margin="1,0" />
+                                                                            </ControlTemplate>
+                                                                        </Thumb.Template>
+                                                                    </Thumb>
+                                                                </Track.Thumb>
+                                                                <Track.IncreaseRepeatButton>
+                                                                    <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                                                  Opacity="0"
+                                                                                  Height="0" />
+                                                                </Track.IncreaseRepeatButton>
+                                                            </Track>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </DataGrid.Resources>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Zeitstempel"
+                                                            Binding="{Binding TimeStamp, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                                            Width="110" />
+                                        <DataGridTextColumn Header="Typ"
+                                                            Binding="{Binding LogTyp}"
+                                                            Width="100" />
+                                        <DataGridTextColumn Header="Richtung"
+                                                            Binding="{Binding Direction}"
+                                                            Width="90" />
+                                        <DataGridTextColumn Header="Topic"
+                                                            Binding="{Binding Topic}"
+                                                            Width="200" />
+                                        <DataGridTextColumn Header="Payload"
+                                                            Binding="{Binding Payload}"
+                                                            Width="*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </materialDesign:Card>
+
+                    </Grid>
+                </materialDesign:Card>
             </TabItem>
 
             <TabItem Height="50"
@@ -373,707 +400,262 @@
                     </Grid>
                 </TabItem.Header>
 
-                <materialDesign:Card Background="#181d29"
+                <materialDesign:Card Background="#2d2d2d"
                                      Margin="10"
                                      materialDesign:ElevationAssist.Elevation="Dp3">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel Margin="10,10,10,5">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                         materialDesign:HintAssist.Hint="Pflanzenname"
-                                         materialDesign:HintAssist.Background="#181d29"
-                                         materialDesign:HintAssist.IsFloating="False"
-                                         Width="280"
-                                         Text="{Binding NewPlantName, UpdateSourceTrigger=PropertyChanged}"/>
-                                <Button Content="Hinzufügen"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Command="{Binding AddPlantCommand}"
-                                        Margin="10,0,0,0"/>
-                            </StackPanel>
-                            <TextBlock Foreground="#ef5350"
-                                       FontSize="12"
-                                       Margin="4,2,0,0"
-                                       Text="{Binding NameErrorMessage}">
-                                <TextBlock.Visibility>
-                                    <Binding Path="HasNameError">
-                                        <Binding.Converter>
-                                            <BooleanToVisibilityConverter/>
-                                        </Binding.Converter>
-                                    </Binding>
-                                </TextBlock.Visibility>
-                            </TextBlock>
-                        </StackPanel>
+                        <materialDesign:Card Margin="10,10,10,0"
+                                             Background="#212121">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="65" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                
+                                <StackPanel Margin="10,10,10,5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                 materialDesign:HintAssist.Hint="Pflanzenname"
+                                                 materialDesign:HintAssist.Background="#212121"
+                                                 materialDesign:HintAssist.IsFloating="True"
+                                                 materialDesign:HintAssist.HintPaddingBrush="#212121"
+                                                 Width="280"
+                                                 Text="{Binding NewPlantName, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Button Content="Hinzufügen"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Command="{Binding AddPlantCommand}"
+                                                Margin="10,0,0,0" />
+                                    </StackPanel>
+                                    <TextBlock Foreground="#ef5350"
+                                               FontSize="12"
+                                               Margin="4,2,0,0"
+                                               Text="{Binding NameErrorMessage}">
+                                        <TextBlock.Visibility>
+                                            <Binding Path="HasNameError">
+                                                <Binding.Converter>
+                                                    <BooleanToVisibilityConverter />
+                                                </Binding.Converter>
+                                            </Binding>
+                                        </TextBlock.Visibility>
+                                    </TextBlock>
+                                </StackPanel>
 
-                        <DataGrid Grid.Row="1"
-                                  Margin="10,5,10,5"
-                                  ItemsSource="{Binding PlantCollection}"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  CanUserResizeRows="False"
-                                  CanUserSortColumns="False"
-                                  HorizontalScrollBarVisibility="Auto"
-                                  AutoGenerateColumns="False"
-                                  VerticalScrollBarVisibility="Auto"
-                                  RowHeight="40">
+                                <DataGrid Grid.Row="1"
+                                          Margin="10,5,10,5"
+                                          ItemsSource="{Binding PlantCollection}"
+                                          CanUserAddRows="False"
+                                          Background="#212121"
+                                          CanUserDeleteRows="False"
+                                          CanUserResizeRows="False"
+                                          CanUserSortColumns="False"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          AutoGenerateColumns="False"
+                                          VerticalScrollBarVisibility="Auto"
+                                          RowHeight="40">
 
-                            <DataGrid.Resources>
-                                <Style TargetType="ScrollBar">
-                                    <Setter Property="Width" Value="6"/>
-                                    <Setter Property="MinWidth" Value="6"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ScrollBar">
-                                                <Grid Background="Transparent" Width="6">
-                                                    <Border CornerRadius="3"
-                                                            Background="#1e2538"
-                                                            Margin="1,4" />
-                                                    <Track Name="PART_Track"
-                                                           IsDirectionReversed="True">
-                                                        <Track.DecreaseRepeatButton>
-                                                            <RepeatButton Command="ScrollBar.PageUpCommand"
-                                                                          Opacity="0" Height="0"/>
-                                                        </Track.DecreaseRepeatButton>
-                                                        <Track.Thumb>
-                                                            <Thumb>
-                                                                <Thumb.Template>
-                                                                    <ControlTemplate TargetType="Thumb">
-                                                                        <Border Background="#80CBC4"
-                                                                                CornerRadius="3"
-                                                                                Margin="1,0"/>
-                                                                    </ControlTemplate>
-                                                                </Thumb.Template>
-                                                            </Thumb>
-                                                        </Track.Thumb>
-                                                        <Track.IncreaseRepeatButton>
-                                                            <RepeatButton Command="ScrollBar.PageDownCommand"
-                                                                          Opacity="0" Height="0"/>
-                                                        </Track.IncreaseRepeatButton>
-                                                    </Track>
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </DataGrid.Resources>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID"
-                                                    Binding="{Binding PlantID}"
-                                                    IsReadOnly="True"
-                                                    Width="0.4*" />
-                                <DataGridTemplateColumn Header="Status" Width="0.5*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border Width="20"
-                                                    Height="20"
-                                                    CornerRadius="20"
-                                                    BorderThickness="1"
-                                                    BorderBrush="Black">
-                                                <Border.Style>
-                                                    <Style TargetType="Border">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
-                                                                         Value="Low">
-                                                                <Setter Property="Background"
-                                                                        Value="Red" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
-                                                                         Value="Mid">
-                                                                <Setter Property="Background"
-                                                                        Value="Yellow" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
-                                                                         Value="High">
-                                                                <Setter Property="Background"
-                                                                        Value="Green" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
+                                    <DataGrid.Resources>
+                                        <Style TargetType="ScrollBar">
+                                            <Setter Property="Width"
+                                                    Value="6" />
+                                            <Setter Property="MinWidth"
+                                                    Value="6" />
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ScrollBar">
+                                                        <Grid Background="Transparent"
+                                                              Width="6">
+                                                            <Border CornerRadius="3"
+                                                                    Background="#1e2538"
+                                                                    Margin="1,4" />
+                                                            <Track Name="PART_Track"
+                                                                   IsDirectionReversed="True">
+                                                                <Track.DecreaseRepeatButton>
+                                                                    <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                                                  Opacity="0"
+                                                                                  Height="0" />
+                                                                </Track.DecreaseRepeatButton>
+                                                                <Track.Thumb>
+                                                                    <Thumb>
+                                                                        <Thumb.Template>
+                                                                            <ControlTemplate TargetType="Thumb">
+                                                                                <Border Background="#80CBC4"
+                                                                                        CornerRadius="3"
+                                                                                        Margin="1,0" />
+                                                                            </ControlTemplate>
+                                                                        </Thumb.Template>
+                                                                    </Thumb>
+                                                                </Track.Thumb>
+                                                                <Track.IncreaseRepeatButton>
+                                                                    <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                                                  Opacity="0"
+                                                                                  Height="0" />
+                                                                </Track.IncreaseRepeatButton>
+                                                            </Track>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </DataGrid.Resources>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID"
+                                                            Binding="{Binding PlantID}"
+                                                            IsReadOnly="True"
+                                                            Width="0.4*" />
+                                        <DataGridTemplateColumn Header="Status"
+                                                                Width="0.5*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border Width="20"
+                                                            Height="20"
+                                                            CornerRadius="20"
+                                                            BorderThickness="1"
+                                                            BorderBrush="Black">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                                 Value="Low">
+                                                                        <Setter Property="Background"
+                                                                                Value="Red" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                                 Value="Mid">
+                                                                        <Setter Property="Background"
+                                                                                Value="Yellow" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                                 Value="High">
+                                                                        <Setter Property="Background"
+                                                                                Value="Green" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
 
-                                            </Border>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
 
-                                </DataGridTemplateColumn>
+                                        </DataGridTemplateColumn>
 
-                                <DataGridTextColumn Header="Bezeichnung"
-                                                    Binding="{Binding Name}"
-                                                    IsReadOnly="True"
-                                                    Width="*" />
-                                <DataGridTextColumn Header="MQTT Topic"
-                                                    Binding="{Binding MqttTopic}"
-                                                    IsReadOnly="True"
-                                                    Width="1.5*" />
-                                <DataGridTextColumn Header="Sensorwert"
-                                                    Binding="{Binding MoistureSensor}"
-                                                    IsReadOnly="True"
-                                                    Width="0.8*" />
-                                <DataGridTextColumn Header="Feuchtigkeit %"
-                                                    Binding="{Binding MoisturePercent, StringFormat={}{0}%}"
-                                                    IsReadOnly="True"
-                                                    Width="0.8*" />
-                                <DataGridTextColumn Header="Letzte Aktualisierung"
-                                                    Binding="{Binding LastUpdate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
-                                                    IsReadOnly="True"
-                                                    Width="*" />
-                                <DataGridTextColumn Header="Batterie"
-                                                    Binding="{Binding BatteryState, StringFormat={}{0}%}"
-                                                    IsReadOnly="True"
-                                                    Width="0.6*" />
-                                <DataGridTemplateColumn Header="" Width="50">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Foreground="#ef5350"
-                                                    Padding="0"
-                                                    VerticalAlignment="Center"
-                                                    Command="{Binding DataContext.RemovePlantCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}">
-                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"
-                                                                         VerticalAlignment="Center"/>
-                                            </Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-
-                        <Grid Grid.Row="2"
-                              Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="30" />
-                            </Grid.RowDefinitions>
-
-
-                            <StackPanel Orientation="Horizontal">
-                                <Border Background="Red"
-                                        Height="20"
-                                        Width="20"
-                                        CornerRadius="10"
-                                        Margin="0,0,10,0" />
-
-                                <TextBlock Text="Status Rot = 0% - 30%"
-                                           FontSize="15"
-                                           FontWeight="SemiBold"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal"
-                                        Grid.Row="1">
-                                <Border Background="Yellow"
-                                        Height="20"
-                                        Width="20"
-                                        CornerRadius="10"
-                                        Margin="0,0,10,0" />
-                                <TextBlock Text="Status Gelb = 31%-70%"
-                                           VerticalAlignment="Center"
-                                           FontSize="15"
-                                           FontWeight="SemiBold" />
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal"
-                                        Grid.Row="2">
-                                <Border Background="Green"
-                                        Height="20"
-                                        Width="20"
-                                        CornerRadius="10"
-                                        Margin="0,0,10,0" />
-
-                                <TextBlock Text="Status Grün = 71%-100%"
-                                           VerticalAlignment="Center"
-                                           FontSize="15"
-                                           FontWeight="SemiBold" />
-
-                            </StackPanel>
+                                        <DataGridTextColumn Header="Bezeichnung"
+                                                            Binding="{Binding Name}"
+                                                            IsReadOnly="True"
+                                                            Width="*" />
+                                        <DataGridTextColumn Header="MQTT Topic"
+                                                            Binding="{Binding MqttTopic}"
+                                                            IsReadOnly="True"
+                                                            Width="1.5*" />
+                                        <DataGridTextColumn Header="Sensorwert"
+                                                            Binding="{Binding MoistureSensor}"
+                                                            IsReadOnly="True"
+                                                            Width="0.8*" />
+                                        <DataGridTextColumn Header="Feuchtigkeit %"
+                                                            Binding="{Binding MoisturePercent, StringFormat={}{0}%}"
+                                                            IsReadOnly="True"
+                                                            Width="0.8*" />
+                                        <DataGridTextColumn Header="Letzte Aktualisierung"
+                                                            Binding="{Binding LastUpdate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                                            IsReadOnly="True"
+                                                            Width="*" />
+                                        <DataGridTextColumn Header="Batterie"
+                                                            Binding="{Binding BatteryState, StringFormat={}{0}%}"
+                                                            IsReadOnly="True"
+                                                            Width="0.6*" />
+                                        <DataGridTemplateColumn Header=""
+                                                                Width="50">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                                            Foreground="#ef5350"
+                                                            Padding="0"
+                                                            VerticalAlignment="Center"
+                                                            Command="{Binding DataContext.RemovePlantCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}">
+                                                        <materialDesign:PackIcon Kind="Delete"
+                                                                                 Width="18"
+                                                                                 Height="18"
+                                                                                 VerticalAlignment="Center" />
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </materialDesign:Card>
 
 
+                        <materialDesign:Card Grid.Row="1"
+                                             Margin="10"
+                                             Background="#212121">
+                            <Grid Grid.Row="2"
+                                  Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                </Grid.RowDefinitions>
 
 
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="Red"
+                                            Height="20"
+                                            Width="20"
+                                            CornerRadius="10"
+                                            Margin="0,0,10,0" />
 
+                                    <TextBlock Text="Status Rot = 0% - 30%"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
 
-                        </Grid>
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="1">
+                                    <Border Background="Yellow"
+                                            Height="20"
+                                            Width="20"
+                                            CornerRadius="10"
+                                            Margin="0,0,10,0" />
+                                    <TextBlock Text="Status Gelb = 31%-70%"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"
+                                               FontWeight="SemiBold" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="2">
+                                    <Border Background="Green"
+                                            Height="20"
+                                            Width="20"
+                                            CornerRadius="10"
+                                            Margin="0,0,10,0" />
+
+                                    <TextBlock Text="Status Grün = 71%-100%"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"
+                                               FontWeight="SemiBold" />
+
+                                </StackPanel>
+                            </Grid>
+                        </materialDesign:Card>
                     </Grid>
-                    <!--<WrapPanel Margin="10"
-                               HorizontalAlignment="Stretch">
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="0,0,0,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 1" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="Transparent">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" 
-                                                   Foreground="White"/>
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="White" />
-                                </StatusBar>
-
-                            </Grid>
-                        </materialDesign:Card>
-
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="10,0,10,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 2" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="0,0,0,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 3" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="0,0,0,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 4" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="10,0,10,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 5" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="0,0,0,10"
-                                             Background="#1a2035"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 6" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Height="50"
-                                           Grid.Row="2"
-                                           Background="Transparent">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="White" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="White" />
-                                </StatusBar>
-
-                            </Grid>
-
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="0,0,0,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 7" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="10,0,10,10"
-                                             Background="#141923"
-                                             UniformCornerRadius="20"
-                                             materialDesign:ElevationAssist.Elevation="Dp5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 8" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-
-                        </materialDesign:Card>
-
-
-                        <materialDesign:Card Height="197"
-                                             Width="273"
-                                             Margin="0,0,0,10"
-                                             Background="#141923"
-                                             materialDesign:ElevationAssist.Elevation="Dp5"
-                                             UniformCornerRadius="20">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <materialDesign:ColorZone Mode="SecondaryMid"
-                                                          Height="40">
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Width="32"
-                                                                 Height="32"
-                                                                 VerticalAlignment="Center"
-                                                                 Kind="Gardening" />
-                                        <TextBlock Margin="8,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                   Text="Pflanze 9" />
-                                    </StackPanel>
-                                </materialDesign:ColorZone>
-
-                                <StatusBar Width="300"
-                                           Grid.Row="2"
-                                           Background="#aad8d3">
-
-                                    <StatusBarItem Content="Feuchtigkeit:"
-                                                   FontWeight="SemiBold" />
-                                    <Separator />
-                                    <StatusBarItem>
-                                        <ProgressBar Width="120"
-                                                     Height="8"
-                                                     Value="65" />
-                                    </StatusBarItem>
-                                    <Separator />
-                                    <StatusBarItem Content="65%"
-                                                   FontWeight="SemiBold" />
-                                </StatusBar>
-
-                            </Grid>
-
-                        </materialDesign:Card>
-                    </WrapPanel>-->
 
                 </materialDesign:Card>
-
             </TabItem>
-
 
             <TabItem Height="50"
                      Width="200"
@@ -1102,9 +684,76 @@
 
                 </TabItem.Header>
 
-                <materialDesign:Card Background="#181d29"
+                <materialDesign:Card Background="#2d2d2d"
                                      Margin="10"
                                      materialDesign:ElevationAssist.Elevation="Dp3">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <materialDesign:Card Grid.ColumnSpan="2"
+                                             Margin="10"
+                                             Background="#212121">
+                            <Grid Background="#212121">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <lvc:CartesianChart Series="{Binding PlantSeries}"
+                                                    Height="300"
+                                                    HorizontalAlignment="Stretch"
+                                                    Background="#212121"/>
+
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Grid.Row="1"
+                                             Background="#212121"
+                                             Margin="10,0,10,10" />
+                        <materialDesign:Card Grid.Row="1"
+                                             Grid.Column="1"
+                                             Background="#212121"
+                                             Margin="0,0,10,10" />
+
+                        <materialDesign:Card Grid.RowSpan="2"
+                                             Grid.Column="2"
+                                             Background="#212121"
+                                             Margin="0,10,10,10">
+
+                            <Grid ShowGridLines="True">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Center">
+
+                                    <TextBlock Text="Pflanze auswählen:"
+                                               FontSize="14"
+                                               VerticalAlignment="Center" />
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,0,0"
+                                              Height="40"
+                                              Width="200" />
+
+
+                                </StackPanel>
+
+
+                            </Grid>
+                        </materialDesign:Card>
+                    </Grid>
 
                 </materialDesign:Card>
             </TabItem>
