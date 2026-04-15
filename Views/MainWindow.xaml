@@ -108,18 +108,18 @@
                                              Height="50"
                                              Text="{Binding IpAdresse}"
                                              Width="270"
+                                             materialDesign:HintAssist.HintPaddingBrush="#212121"
                                              materialDesign:HintAssist.Hint="IP-Adresse"
                                              materialDesign:HintAssist.Background="#212121"
-                                             materialDesign:HintAssist.IsFloating="False"
                                              HorizontalAlignment="Left"
                                              Margin="10,0,0,0" />
                                     <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                              Height="50"
                                              Width="60"
                                              Text="{Binding Port}"
+                                             materialDesign:HintAssist.HintPaddingBrush="#212121"
                                              materialDesign:HintAssist.Hint="Port"
                                              materialDesign:HintAssist.Background="#212121"
-                                             materialDesign:HintAssist.IsFloating="False"
                                              HorizontalAlignment="Left"
                                              DataObject.Pasting="PortTextBox_Pasting"
                                              Margin="10,0,0,0" />
@@ -200,7 +200,7 @@
                                                          Grid.Row="1"
                                                          Grid.Column="1"
                                                          Kind="{Binding IsConnected, Converter={StaticResource BoolToIconConverter}}"
-                                                         Foreground="Red"
+                                                         Foreground="{Binding IsConnected, Converter={StaticResource BoolToColor}}"
                                                          Height=" 24"
                                                          Width="24">
                                 </materialDesign:PackIcon>
@@ -350,11 +350,11 @@
                                     </DataGrid.Resources>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Zeitstempel"
-                                                            Binding="{Binding TimeStamp, StringFormat={}{0:dd.MM.yyyy}}"
+                                                            Binding="{Binding TimeStamp, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
                                                             Width="110" />
                                         <DataGridTextColumn Header="Typ"
                                                             Binding="{Binding LogTyp}"
-                                                            Width="60" />
+                                                            Width="100" />
                                         <DataGridTextColumn Header="Richtung"
                                                             Binding="{Binding Direction}"
                                                             Width="90" />

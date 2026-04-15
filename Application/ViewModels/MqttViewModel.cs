@@ -26,7 +26,7 @@ public partial class MqttViewModel : ObservableObject
     private TimeSpan _elapsed = TimeSpan.Zero;
 
     [ObservableProperty]
-    private string _ipAdresse = "localhost";
+    private string _ipAdresse;
     [ObservableProperty]
     private int _port = 1883;
     [ObservableProperty]
