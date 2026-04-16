@@ -26,24 +26,23 @@ public partial class MqttViewModel : ObservableObject
     private TimeSpan _elapsed = TimeSpan.Zero;
 
     [ObservableProperty]
-    private string _ipAdresse;
+    public partial string IpAdresse { get; set; }
     [ObservableProperty]
-    private int _port = 1883;
+    public partial int Port { get; set; } = 1883;
     [ObservableProperty]
-    private ObservableCollection<TopicLog> _logCollection = new();
+    public partial ObservableCollection<TopicLog> LogCollection { get; set; } = new();
     [ObservableProperty]
-    private string _broker = "-";
+    public partial string Broker { get; set; } = "-";
     [ObservableProperty]
-    private int _receivedMessage = 0;
+    public partial int ReceivedMessage { get; set; } = 0;
     [ObservableProperty]
-    private int _errorCount = 0;
+    public partial int ErrorCount { get; set; } = 0;
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotConnected))]
-    private bool _isConnected = false;
-
+    public partial bool IsConnected { get; set; } = false;
     public bool IsNotConnected => !IsConnected;
     [ObservableProperty]
-    private string _upTime = "--:--:--";
+    public partial string UpTime { get; set; } = "--:--:--";
 
     public MqttViewModel(MainWindowLogic logic)
     {
@@ -63,12 +62,14 @@ public partial class MqttViewModel : ObservableObject
 
     private void LoadLogs()
     {
-        if (!File.Exists(LogFilePath)) return;
+        if (!File.Exists(LogFilePath))
+            return;
         try
         {
             var json = File.ReadAllText(LogFilePath);
             var state = JsonSerializer.Deserialize<LogState>(json, _jsonOptions);
-            if (state == null) return;
+            if (state == null)
+                return;
 
             foreach (var log in state.Logs)
                 LogCollection.Add(log);
@@ -93,8 +94,14 @@ public partial class MqttViewModel : ObservableObject
         {
             lock (_saveLock)
             {
-                try { File.WriteAllText(LogFilePath, JsonSerializer.Serialize(state, _jsonOptions)); }
-                catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Logs: {ex.Message}"); }
+                try
+                { 
+                    File.WriteAllText(LogFilePath, JsonSerializer.Serialize(state, _jsonOptions)); 
+                }
+                catch (Exception ex) 
+                { 
+                    _logic.LogError($"Fehler beim Speichern der Logs: {ex.Message}"); 
+                }
             }
         });
     }
@@ -114,12 +121,12 @@ public partial class MqttViewModel : ObservableObject
         public List<TopicLog> Logs { get; init; } = [];
         public int ErrorCount { get; init; }
     }
- 
+
     [RelayCommand]
     private async Task ConnectAsync()
     {
         await _logic.Connect(IpAdresse, Port);
- 
+
         IsConnected = _logic.Status == "Connected";
         Broker = IsConnected ? $"{IpAdresse}:{Port}" : "-";
 
@@ -130,18 +137,18 @@ public partial class MqttViewModel : ObservableObject
             _upTimer.Start();
         }
     }
- 
+
     [RelayCommand]
     private async Task DisconnectAsync()
     {
         await _logic.Disconnect();
- 
+
         IsConnected = false;
         Broker = "-";
 
         _upTimer.Stop();
     }
- 
+
     private void OnLogMessage(string message)
     {
         App.Current.Dispatcher.Invoke(() =>

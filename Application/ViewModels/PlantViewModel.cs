@@ -18,11 +18,11 @@ public partial class PlantViewModel : ObservableObject
     private ObservableCollection<Plant> _plantCollection = new();
 
     [ObservableProperty]
-    private string _newPlantName = string.Empty;
+    public partial string NewPlantName { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasNameError))]
-    private string _nameErrorMessage = string.Empty;
+    public partial string NameErrorMessage { get; set; } = string.Empty;
 
     public bool HasNameError => !string.IsNullOrEmpty(NameErrorMessage);
 
@@ -35,12 +35,15 @@ public partial class PlantViewModel : ObservableObject
 
     private void LoadPlants()
     {
-        if (!File.Exists(PlantsFilePath)) return;
+        if (!File.Exists(PlantsFilePath))
+            return;
+
         try
         {
             var json = File.ReadAllText(PlantsFilePath);
             var plants = JsonSerializer.Deserialize<List<Plant>>(json, _jsonOptions);
-            if (plants == null) return;
+            if (plants == null)
+                return;
 
             foreach (var plant in plants)
                 PlantCollection.Add(plant);
@@ -58,7 +61,8 @@ public partial class PlantViewModel : ObservableObject
         {
             lock (_saveLock)
             {
-                try { File.WriteAllText(PlantsFilePath, JsonSerializer.Serialize(snapshot, _jsonOptions)); }
+                try
+                { File.WriteAllText(PlantsFilePath, JsonSerializer.Serialize(snapshot, _jsonOptions)); }
                 catch (Exception ex) { _logic.LogError($"Fehler beim Speichern der Pflanzen: {ex.Message}"); }
             }
         });
@@ -67,7 +71,8 @@ public partial class PlantViewModel : ObservableObject
     [RelayCommand]
     private void AddPlant()
     {
-        if (string.IsNullOrWhiteSpace(NewPlantName)) return;
+        if (string.IsNullOrWhiteSpace(NewPlantName))
+            return;
 
         var trimmed = NewPlantName.Trim();
 
@@ -101,9 +106,12 @@ public partial class PlantViewModel : ObservableObject
         try
         {
             var root = JsonDocument.Parse(payload).RootElement;
-            if (root.TryGetProperty("moistureSensor", out var ms)) plant.MoistureSensor = ms.GetInt32();
-            if (root.TryGetProperty("moisturePercent", out var mp)) plant.MoisturePercent = mp.GetInt32();
-            if (root.TryGetProperty("battery", out var bat)) plant.BatteryState = bat.GetInt32();
+            if (root.TryGetProperty("moistureSensor", out var ms))
+                plant.MoistureSensor = ms.GetInt32();
+            if (root.TryGetProperty("moisturePercent", out var mp))
+                plant.MoisturePercent = mp.GetInt32();
+            if (root.TryGetProperty("battery", out var bat))
+                plant.BatteryState = bat.GetInt32();
             return true;
         }
         catch { return false; }
@@ -112,13 +120,15 @@ public partial class PlantViewModel : ObservableObject
     private static bool TryParseCsv(string payload, Plant plant)
     {
         var parts = payload.Split(',');
-        if (parts.Length < 2) return false;
+        if (parts.Length < 2)
+            return false;
 
         static bool TryParseClean(string s, out double result) =>
             double.TryParse(s.Trim().TrimEnd('%'), System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture, out result);
 
-        if (!TryParseClean(parts[0], out var sensor)) return false;
+        if (!TryParseClean(parts[0], out var sensor))
+            return false;
         plant.MoistureSensor = (int)sensor;
 
         if (parts.Length >= 2 && TryParseClean(parts[1], out var percent))
@@ -132,7 +142,8 @@ public partial class PlantViewModel : ObservableObject
     private static bool TryParseSingleValue(string payload, Plant plant)
     {
         if (!double.TryParse(payload.Trim(), System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out var val)) return false;
+                System.Globalization.CultureInfo.InvariantCulture, out var val))
+            return false;
         plant.MoistureSensor = (int)val;
         return true;
     }
@@ -144,7 +155,8 @@ public partial class PlantViewModel : ObservableObject
         var plant = PlantCollection.FirstOrDefault(p =>
             string.Equals(p.Name, topicSegment, StringComparison.OrdinalIgnoreCase));
 
-        if (plant == null) return;
+        if (plant == null)
+            return;
 
         App.Current.Dispatcher.Invoke(() =>
         {
