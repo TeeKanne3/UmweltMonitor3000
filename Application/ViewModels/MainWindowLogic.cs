@@ -8,7 +8,7 @@ public class MainWindowLogic
 {
     private readonly IMqttService _mqttService;
     private readonly IUmweltMonitorRepository _repository;
-
+    private readonly INotificationService _notificationService;
 
     public string Status { get; private set; } = "Disconnected";
 
@@ -20,6 +20,7 @@ public class MainWindowLogic
     {
         _mqttService = new MqttService();
         _repository = new UmweltMonitorRepository();
+        _notificationService = new NotificationService();
 
         _mqttService.MessageReceived += OnMessageReceived;
         _mqttService.LogMessage += LogError;
@@ -31,6 +32,8 @@ public class MainWindowLogic
         Log($"Received from: {topic} - Payload: {payload}");
 
         var sensorId = topic.Split('/').Last();
+
+        _notificationService.SendNotification("New Topic received", $"{topic}");
 
         await _repository.SaveSensorDataAsync(topic, payload);
         MessageLogged?.Invoke(topic, payload);
