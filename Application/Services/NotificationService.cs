@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using UmweltMonitor3000.Application.Interfaces;
 
-namespace UmweltMonitor3000.Application.Services
+namespace UmweltMonitor3000.Application.Services;
+
+public class NotificationService : INotificationService
 {
-    internal class NotificationService
+    public void SendNotification(string title, string message)
     {
+        new ToastContentBuilder()
+            .AddText(title)
+            .AddText(message)
+            .Show();
     }
 }
