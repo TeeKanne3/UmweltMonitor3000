@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Converter:ValueToRangeConverter x:Key="ValueToRangeConverter" />
+            <Converter:ValueToRangeConverter x:Key="ValueToRangeConverter2" />
             <Converter:BoolToIconConverter x:Key="BoolToIconConverter"/>
             <Converter:BoolToColor x:Key="BoolToColor"/>
         </ResourceDictionary>
