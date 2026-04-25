@@ -1,30 +1,51 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
 using System.Collections.ObjectModel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
+using UmweltMonitor3000.Application.Models;
 
 namespace UmweltMonitor3000.Application.ViewModels;
 
-public partial class StatisticViewModel :ObservableObject
+public partial class StatisticViewModel : ObservableObject
 {
+    private readonly MainWindowLogic _logic;
+
+    public ObservableCollection<Plant> PlantCollection { get; }
+
     [ObservableProperty]
-    public partial ISeries[] PlantSeries { get; set; }
-            =
-            [
-                new LineSeries<int>
-                {
-                    Values = [4, 6, 5, 3, -3, -1, 2]
-                },
-            ];
+    private Plant? _selectedPlant;
 
+    [ObservableProperty]
+    public partial ISeries[] PlantSeries { get; set; } = [];
 
+    public StatisticViewModel(MainWindowLogic logic, PlantViewModel plantViewModel)
+    {
+        _logic = logic;
+        PlantCollection = plantViewModel.PlantCollection;
+    }
+
+    partial void OnSelectedPlantChanged(Plant? value)
+    {
+        if (value == null)
+        {
+            PlantSeries = [];
+            return;
+        }
+        LoadPlantData(value);
+    }
+
+    private async void LoadPlantData(Plant plant)
+    {
+        var data = await _logic.GetPlantHistoryAsync(plant.MqttTopic);
+        var values = data.Select(d => d.Value).ToArray();
+
+        PlantSeries =
+        [
+            new LineSeries<double>
+            {
+                Values = values,
+                Name = plant.Name
+            }
+        ];
+    }
 }
-            
-
-        
-
-
