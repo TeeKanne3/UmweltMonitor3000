@@ -709,6 +709,7 @@
                                 </Grid.RowDefinitions>
 
                                 <lvc:CartesianChart Series="{Binding PlantSeries}"
+                                                    XAxes="{Binding XAxes}"
                                                     Height="300"
                                                     HorizontalAlignment="Stretch"
                                                     Background="#212121"/>

@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore;
+using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System.Collections.ObjectModel;
 using UmweltMonitor3000.Application.Models;
 
@@ -17,6 +20,20 @@ public partial class StatisticViewModel : ObservableObject
 
     [ObservableProperty]
     public partial ISeries[] PlantSeries { get; set; } = [];
+
+    public Axis[] XAxes { get; } =
+    [
+        new Axis
+        {
+            Labeler = value => value >= DateTime.MinValue.Ticks && value <= DateTime.MaxValue.Ticks
+                ? new DateTime((long)value).ToString("HH:mm:ss")
+                : string.Empty,
+            LabelsRotation = -45,
+            TextSize = 10,
+            LabelsPaint = new SolidColorPaint(SKColors.LightGray),
+            SeparatorsPaint = new SolidColorPaint(SKColors.Gray) { StrokeThickness = 1 }
+        }
+    ];
 
     public StatisticViewModel(MainWindowLogic logic, PlantViewModel plantViewModel)
     {
@@ -44,13 +61,13 @@ public partial class StatisticViewModel : ObservableObject
     private async void LoadPlantData(Plant plant)
     {
         var data = await _logic.GetPlantHistoryAsync(plant.MqttTopic);
-        var values = data.Select(d => d.Value).ToArray();
+        var points = data.Select(d => new DateTimePoint(d.TimeStamp.ToLocalTime(), d.Value)).ToArray();
 
         PlantSeries =
         [
-            new LineSeries<double>
+            new LineSeries<DateTimePoint>
             {
-                Values = values,
+                Values = points,
                 Name = plant.Name
             }
         ];
