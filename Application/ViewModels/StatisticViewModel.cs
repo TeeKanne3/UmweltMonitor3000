@@ -22,6 +22,13 @@ public partial class StatisticViewModel : ObservableObject
     {
         _logic = logic;
         PlantCollection = plantViewModel.PlantCollection;
+        _logic.MessageLogged += OnMessageLogged;
+    }
+
+    private void OnMessageLogged(string topic, string payload)
+    {
+        if (SelectedPlant != null && topic == SelectedPlant.MqttTopic)
+            LoadPlantData(SelectedPlant);
     }
 
     partial void OnSelectedPlantChanged(Plant? value)
