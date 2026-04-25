@@ -5,10 +5,6 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.Drawing;
 using LiveChartsCore.Kernel;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.Themes;
-using OpenTK.Graphics.ES20;
-using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -146,6 +142,20 @@ public partial class StatisticViewModel : ObservableObject
     [ObservableProperty]
     public partial string MoistureTemperature { get; set; } = "30%";
 
+    public Axis[] XAxes { get; } =
+    [
+        new Axis
+        {
+            Labeler = value => value >= DateTime.MinValue.Ticks && value <= DateTime.MaxValue.Ticks
+                ? new DateTime((long)value).ToString("HH:mm:ss")
+                : string.Empty,
+            LabelsRotation = -45,
+            TextSize = 10,
+            LabelsPaint = new SolidColorPaint(SKColors.LightGray),
+            SeparatorsPaint = new SolidColorPaint(SKColors.Gray) { StrokeThickness = 1 }
+        }
+    ];
+
     public StatisticViewModel(MainWindowLogic logic, PlantViewModel plantViewModel)
     {
         _logic = logic;
@@ -172,13 +182,13 @@ public partial class StatisticViewModel : ObservableObject
     private async void LoadPlantData(Plant plant)
     {
         var data = await _logic.GetPlantHistoryAsync(plant.MqttTopic);
-        var values = data.Select(d => d.Value).ToArray();
+        var points = data.Select(d => new DateTimePoint(d.TimeStamp.ToLocalTime(), d.Value)).ToArray();
 
         PlantSeries =
         [
-            new LineSeries<double>
+            new LineSeries<DateTimePoint>
             {
-                Values = values,
+                Values = points,
                 Name = plant.Name
             }
         ];
