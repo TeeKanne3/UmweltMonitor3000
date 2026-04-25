@@ -149,7 +149,7 @@ public partial class MqttViewModel : ObservableObject
             LogCollection.Insert(0, new TopicLog
             {
                 Id = Guid.NewGuid(),
-                TimeStamp = DateOnly.FromDateTime(DateTime.Now),
+                TimeStamp = DateTime.Now,
                 LogTyp = "INFO",
                 Direction = "IN",
                 Topic = "-",
@@ -171,7 +171,7 @@ public partial class MqttViewModel : ObservableObject
             LogCollection.Insert(0, new TopicLog
             {
                 Id = Guid.NewGuid(),
-                TimeStamp = DateOnly.FromDateTime(DateTime.Now),
+                TimeStamp = DateTime.Now,
                 LogTyp = "MQTT",
                 Direction = "IN",
                 Topic = topic,
