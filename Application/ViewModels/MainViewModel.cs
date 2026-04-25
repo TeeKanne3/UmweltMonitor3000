@@ -13,6 +13,6 @@ public partial class MainViewModel : ObservableObject
         var logic = new MainWindowLogic();
         MqttViewModel = new MqttViewModel(logic);
         PlantViewModel = new PlantViewModel(logic);
-        StatisticViewModel = new StatisticViewModel();
+        StatisticViewModel = new StatisticViewModel(logic, PlantViewModel);
     }
 }

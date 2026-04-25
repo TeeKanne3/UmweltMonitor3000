@@ -784,6 +784,30 @@
                                 Width="6">
 
                         </Border>
+
+                        <lvc:PieChart InitialRotation="-90"
+              Series="{Binding TemperatureSeries}"
+              MinValue="0"
+              Margin="0,0,0,10"
+              Height="250"
+              Grid.Row="1"
+              Grid.Column="3"
+              VerticalAlignment="Center"
+              Background="#212121"
+              MaxValue="50">
+                        </lvc:PieChart>
+
+                        <TextBlock FontSize="40"
+            Text="{Binding CurrentTemperature}"
+            Foreground="White"
+            Grid.Row="1"
+                                   Grid.Column="3"
+            Margin="0,0,0,10"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontWeight="Bold">
+
+                        </TextBlock>
                         <materialDesign:Card Grid.Row="2"
                                              Background="#212121"
                                              Margin="10,0,10,10">
@@ -872,135 +896,58 @@
                                            HorizontalAlignment="Center">
                                 </TextBlock>
 
-                                <TextBlock FontSize="15"
-                                           Grid.Row="1"
+                                <TextBlock Text="{Binding MoisturePercent}"
+            FontSize="15"
+            FontWeight="SemiBold"
+            Grid.Row="1"
                                            Grid.Column="1"
-                                           VerticalAlignment="Center">
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground"
-                                                    Value="White" />
-                                            <Setter Property="Text"
-                                                    Value="Default" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="kritisch">
-                                                    <Setter Property="Background"
-                                                            Value="Red" />
+                                                             Value="30">
                                                     <Setter Property="Text"
-                                                            Value="kritisch" />
+                                                            Value="Kritisch"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="durstig">
-                                                    <Setter Property="Background"
-                                                            Value="Yellow" />
+                                                             Value="30">
                                                     <Setter Property="Text"
-                                                            Value="Durstig" />
+                                                            Value="Zu trocken"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="zunass">
-                                                    <Setter Property="Background"
-                                                            Value="Blue" />
+                                                             Value="30">
                                                     <Setter Property="Text"
-                                                            Value="Zu Nass" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="optimal">
-                                                    <Setter Property="Background"
-                                                            Value="Green" />
-                                                    <Setter Property="Text"
-                                                            Value="Optimal" />
+                                                            Value="Zu nass"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
-
                                 </TextBlock>
 
-                                <TextBlock Grid.Row="2"
-                                           TextWrapping="Wrap"
+                                <TextBlock Text="{Binding MoisturePercent}"
                                            Grid.Column="1"
-                                           FontSize="15"
-                                           VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text"
-                                                    Value="Default" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="kritisch">
-                                                    <Setter Property="Text"
-                                                            Value="Sofort gießen! Die Erde ist staubtrocken." />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="durstig">
-                                                    <Setter Property="Text"
-                                                            Value="Durch die Hitze verdunstet das Wasser sehr schnell." />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="zunass">
-                                                    <Setter Property="Text"
-                                                            Value="Achtung: Staunässe-Gefahr. Erstmal nicht mehr gießen." />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
-                                                             Value="optimal">
-                                                    <Setter Property="Text"
-                                                            Value="Der Pflanze geht es hervorragend." />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-
+            Grid.Row="2"
+            FontSize="15"
+            FontWeight="SemiBold"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
                                 </TextBlock>
 
-                                <materialDesign:PackIcon Grid.Row="3"
-                                                         Grid.Column="1"
-                                                         FontSize="15"
-                                                         VerticalAlignment="Center">
-                                </materialDesign:PackIcon>
-
-                            </Grid>
-                        </materialDesign:Card>
-
-                        <materialDesign:Card Grid.Column="3"
-                                             Grid.Row="1"
-                                             Background="#212121"
-                                             Margin="5,10,10,10">
-
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="40" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Text="Aktuelle Raumtemperatur:"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontSize="15"
-                                           FontWeight="SemiBold" />
-
-                                <lvc:PieChart InitialRotation="-90"
-                                              Series="{Binding TemperatureSeries}"
-                                              MinValue="0"
-                                              Margin="0,0,0,10"
-                                              Height="250"
-                                              Grid.Row="1"
-                                              VerticalAlignment="Center"
-                                              Background="#212121"
-                                              MaxValue="50">
-                                </lvc:PieChart>
-
-
-                                <TextBlock FontSize="40"
-                                           Text="{Binding CurrentTemperature}"
-                                           Foreground="White"
-                                           Grid.Row="1"
-                                           Margin="0,0,0,10"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold">
-
+                                <TextBlock Text="{Binding MoisturePercent}"
+                                <TextBlock Text="{Binding MoisturePercent}"
+                                           Grid.Column="1"
+            Grid.Row="3"
+            FontSize="15"
+            FontWeight="SemiBold"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
                                 </TextBlock>
+
+
+
+
                             </Grid>
                         </materialDesign:Card>
                     </Grid>

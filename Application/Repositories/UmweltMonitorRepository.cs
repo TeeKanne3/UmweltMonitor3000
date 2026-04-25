@@ -48,6 +48,15 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
             : string.Empty;
     }
 
+    public async Task<List<SensorData>> GetAllSensorDataByIdAsync(string sensorId)
+    {
+        var allData = await LoadAllAsync();
+        return allData
+            .Where(x => x.SensorType == sensorId)
+            .OrderBy(x => x.TimeStamp)
+            .ToList();
+    }
+
     private async Task<List<SensorData>> LoadAllAsync()
     {
         if (!File.Exists(_jsonFilePath))

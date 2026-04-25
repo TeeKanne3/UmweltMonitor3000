@@ -1,4 +1,5 @@
 ﻿using UmweltMonitor3000.Application.Interfaces;
+using UmweltMonitor3000.Application.Models;
 using UmweltMonitor3000.Application.Repositories;
 using UmweltMonitor3000.Application.Services;
 
@@ -38,6 +39,9 @@ public class MainWindowLogic
         await _repository.SaveSensorDataAsync(topic, payload);
         MessageLogged?.Invoke(topic, payload);
     }
+
+    public Task<List<SensorData>> GetPlantHistoryAsync(string mqttTopic)
+        => _repository.GetAllSensorDataByIdAsync(mqttTopic);
 
     public async Task Connect(string ip, int port)
     {
