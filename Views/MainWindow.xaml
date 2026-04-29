@@ -710,6 +710,9 @@
                                        VerticalAlignment="Center" />
                             <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                       VerticalAlignment="Center"
+                                      ItemsSource="{Binding PlantCollection}"
+                                      SelectedItem="{Binding SelectedPlant}"
+                                      DisplayMemberPath="Name"
                                       Margin="10,0,0,0"
                                       Height="40"
                                       Width="200" />
@@ -936,9 +939,7 @@
                                 </TextBlock>
 
                                 <TextBlock Text="{Binding MoisturePercent}"
-                                <TextBlock Text="{Binding MoisturePercent}"
-                                           Grid.Column="1"
-            Grid.Row="3"
+                                Grid.Row="3"
             FontSize="15"
             FontWeight="SemiBold"
             VerticalAlignment="Center"
