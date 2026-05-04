@@ -117,7 +117,8 @@ public class UmweltMonitorRepository : IUmweltMonitorRepository
         result = 0;
         var parts = payload.Split(',');
         if (parts.Length < 2) return false;
-        return double.TryParse(parts[0].Trim().TrimEnd('%'),
+        // Index 1 = moisturePercent (Index 0 = raw sensor value)
+        return double.TryParse(parts[1].Trim().TrimEnd('%'),
             System.Globalization.NumberStyles.Any,
             System.Globalization.CultureInfo.InvariantCulture,
             out result);
