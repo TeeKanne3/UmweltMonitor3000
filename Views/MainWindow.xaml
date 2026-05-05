@@ -547,6 +547,11 @@
                                                                         <Setter Property="Background"
                                                                                 Value="Green" />
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter}}"
+                                                                                 Value="TooHigh">
+                                                                        <Setter Property="Background"
+                                                                                Value="#2196F3" />
+                                                                    </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
@@ -618,6 +623,7 @@
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
                                 </Grid.RowDefinitions>
 
 
@@ -628,7 +634,7 @@
                                             CornerRadius="10"
                                             Margin="0,0,10,0" />
 
-                                    <TextBlock Text="Status Rot = 0% - 30%"
+                                    <TextBlock Text="Status Rot = 0% - 30% (Kritisch)"
                                                FontSize="15"
                                                FontWeight="SemiBold"
                                                VerticalAlignment="Center" />
@@ -641,7 +647,7 @@
                                             Width="20"
                                             CornerRadius="10"
                                             Margin="0,0,10,0" />
-                                    <TextBlock Text="Status Gelb = 31%-70%"
+                                    <TextBlock Text="Status Gelb = 31% - 40% (Durstig)"
                                                VerticalAlignment="Center"
                                                FontSize="15"
                                                FontWeight="SemiBold" />
@@ -655,7 +661,22 @@
                                             CornerRadius="10"
                                             Margin="0,0,10,0" />
 
-                                    <TextBlock Text="Status Grün = 71%-100%"
+                                    <TextBlock Text="Status Grün = 41% - 70% (Perfekt)"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"
+                                               FontWeight="SemiBold" />
+
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="3">
+                                    <Border Background="#2196F3"
+                                            Height="20"
+                                            Width="20"
+                                            CornerRadius="10"
+                                            Margin="0,0,10,0" />
+
+                                    <TextBlock Text="Status Blau = 71% - 100% (Zu nass)"
                                                VerticalAlignment="Center"
                                                FontSize="15"
                                                FontWeight="SemiBold" />

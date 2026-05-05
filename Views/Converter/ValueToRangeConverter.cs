@@ -18,10 +18,13 @@ public class ValueToRangeConverter : IValueConverter
         if (valueToConvert <= 30)
             return "Low";
 
-        if (valueToConvert <= 70)
+        if (valueToConvert <= 40)
             return "Mid";
 
-        return "High";
+        if (valueToConvert <= 70)
+            return "High";
+
+        return "TooHigh";
 
     }
 
