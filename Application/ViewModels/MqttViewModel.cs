@@ -125,6 +125,12 @@ public partial class MqttViewModel : ObservableObject
     [RelayCommand]
     private async Task ConnectAsync()
     {
+        if (string.IsNullOrWhiteSpace(IpAdresse))
+        {
+            _logic.LogError("Bitte eine IP-Adresse eingeben.");
+            return;
+        }
+
         await _logic.Connect(IpAdresse, Port);
 
         IsConnected = _logic.Status == "Connected";

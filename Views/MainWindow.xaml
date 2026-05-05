@@ -124,6 +124,9 @@
                                              materialDesign:HintAssist.Hint="Port"
                                              materialDesign:HintAssist.Background="#212121"
                                              HorizontalAlignment="Left"
+                                             MaxLength="4"
+                                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                             PreviewTextInput="PortTextBox_PreviewTextInput"
                                              DataObject.Pasting="PortTextBox_Pasting"
                                              Margin="10,0,0,0" />
                                 </StackPanel>
