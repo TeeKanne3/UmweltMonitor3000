@@ -110,7 +110,13 @@
                                              materialDesign:HintAssist.Hint="IP-Adresse"
                                              materialDesign:HintAssist.Background="#212121"
                                              HorizontalAlignment="Left"
-                                             Margin="10,0,0,0" />
+                                             Margin="10,0,0,0" >
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter"
+                                                        Command="{Binding ConnectCommand}" />
+                                        </TextBox.InputBindings>
+
+                                    </TextBox>
                                     <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                              Height="50"
                                              Width="60"
@@ -423,7 +429,12 @@
                                                  materialDesign:HintAssist.IsFloating="True"
                                                  materialDesign:HintAssist.HintPaddingBrush="#212121"
                                                  Width="280"
-                                                 Text="{Binding NewPlantName, UpdateSourceTrigger=PropertyChanged}" />
+                                                 Text="{Binding NewPlantName, UpdateSourceTrigger=PropertyChanged}" >
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Enter"
+                                                            Command="{Binding AddPlantCommand}" />
+                                            </TextBox.InputBindings>
+                                        </TextBox>
                                         <Button Content="Hinzufügen"
                                                 Style="{StaticResource MaterialDesignFlatButton}"
                                                 Command="{Binding AddPlantCommand}"
