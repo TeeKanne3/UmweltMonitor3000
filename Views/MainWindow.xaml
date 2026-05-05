@@ -14,7 +14,6 @@
         Title="UmweltMonitor3000"
         WindowStyle="SingleBorderWindow"
         MinHeight="825"
-        DataContext="MainViewModel"
         MinWidth="1600"
         Icon="/Assets/Icon/AppIcon.ico">
     <Grid>
@@ -897,7 +896,7 @@
                                              Grid.Column="1"
                                              Background="#212121"
                                              Margin="0,0,5,10">
-                            <Grid ShowGridLines="True">
+                            <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40" />
                                     <RowDefinition Height="70" />
@@ -942,8 +941,7 @@
                                            HorizontalAlignment="Center">
                                 </TextBlock>
 
-                                <TextBlock Text="{Binding MoisturePercent}"
-                                           FontSize="15"
+                                <TextBlock FontSize="15"
                                            FontWeight="SemiBold"
                                            Grid.Row="1"
                                            Grid.Column="1"
@@ -975,8 +973,7 @@
                                 </TextBlock>
 
 
-                                <TextBlock Text="{Binding MoisturePercent}"
-                                           FontSize="15"
+                                <TextBlock FontSize="15"
                                            FontWeight="SemiBold"
                                            Grid.Row="2"
                                            Grid.Column="1"
