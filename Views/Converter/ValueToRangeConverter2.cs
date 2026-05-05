@@ -22,9 +22,9 @@ public class ValueToRangeConverter2 : IValueConverter
             return "durstig";
 
         if (valueToConvert <= 70)
-            return "zunass";
+            return "optimal";
 
-        return "optimal";
+        return "zunass";
 
     }
 
