@@ -570,8 +570,8 @@
                                                             Binding="{Binding MqttTopic}"
                                                             IsReadOnly="True"
                                                             Width="1.5*" />
-                                        <DataGridTextColumn Header="Sensorwert"
-                                                            Binding="{Binding MoistureSensor}"
+                                        <DataGridTextColumn Header="Raumtemperatur"
+                                                            Binding="{Binding MoistureSensor, StringFormat={}{0}°C}"
                                                             IsReadOnly="True"
                                                             Width="0.8*" />
                                         <DataGridTextColumn Header="Feuchtigkeit %"
@@ -974,7 +974,7 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Text"
-                                                    Value="Perfekt" />
+                                                    Value="---" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
                                                              Value="kritisch">
@@ -1006,7 +1006,7 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Text"
-                                                    Value="Perfekt!" />
+                                                    Value="---" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding MoisturePercent, Converter={StaticResource ValueToRangeConverter2}}"
                                                              Value="kritisch">

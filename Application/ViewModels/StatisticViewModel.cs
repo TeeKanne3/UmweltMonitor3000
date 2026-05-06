@@ -125,8 +125,12 @@ public partial class StatisticViewModel : ObservableObject
             MoistureTemperature = "-";
             return;
         }
-        LoadPlantData(value);
-        UpdateMoistureInfo(value);
+
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            LoadPlantData(value);
+            UpdateMoistureInfo(value);
+        });
     }
 
     private async void LoadPlantData(Plant plant)
@@ -134,7 +138,9 @@ public partial class StatisticViewModel : ObservableObject
         var data = await _logic.GetPlantHistoryAsync(plant.MqttTopic);
         var points = data.Select(d => new DateTimePoint(d.TimeStamp.ToLocalTime(), d.Value)).ToArray();
 
-        PlantSeries =
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            PlantSeries =
         [
             new LineSeries<DateTimePoint>
             {
@@ -142,6 +148,7 @@ public partial class StatisticViewModel : ObservableObject
                 Name = plant.Name
             }
         ];
+        });
     }
 
     private void UpdateMoistureInfo(Plant plant)
