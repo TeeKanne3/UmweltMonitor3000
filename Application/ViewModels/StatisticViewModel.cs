@@ -103,6 +103,8 @@ public partial class StatisticViewModel : ObservableObject
         PlantCollection = plantViewModel.PlantCollection;
         PlantCollection.CollectionChanged += (_, _) => UpdateAllPlantMoisture();
         _logic.MessageLogged += OnMessageLogged;
+        UpdateAllPlantMoisture();
+        SelectedPlant = PlantCollection.FirstOrDefault();
     }
 
     private void OnMessageLogged(string topic, string payload)
@@ -170,6 +172,26 @@ public partial class StatisticViewModel : ObservableObject
             new PieSeries<ObservableValue>
             {
                 Values = [new ObservableValue(50 - scaled)],
+                InnerRadius = 60,
+                Fill = new SolidColorPaint(new SKColor(40, 55, 70)),
+                Stroke = null,
+            }
+        ];
+
+        double tempClamped = Math.Clamp(plant.MoistureSensor, 0, 50);
+        CurrentTemperature = $"{plant.MoistureSensor}°C";
+        TemperatureSeries =
+        [
+            new PieSeries<ObservableValue>
+            {
+                Values = [new ObservableValue(tempClamped)],
+                InnerRadius = 60,
+                Fill = new SolidColorPaint(SKColors.OrangeRed),
+                Stroke = null,
+            },
+            new PieSeries<ObservableValue>
+            {
+                Values = [new ObservableValue(50 - tempClamped)],
                 InnerRadius = 60,
                 Fill = new SolidColorPaint(new SKColor(40, 55, 70)),
                 Stroke = null,
